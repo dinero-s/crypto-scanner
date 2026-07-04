@@ -25,9 +25,10 @@ export class FundingRateDto {
     @IsNumber()
     predictedFundingRate?: number;
 
-    @ApiProperty({ description: 'Время следующего funding (unix ms)' })
+    @ApiPropertyOptional({ description: 'Время следующего funding (unix ms), если известно' })
+    @IsOptional()
     @IsNumber()
-    nextFundingTime: number;
+    nextFundingTime?: number | null;
 
     @ApiPropertyOptional({ description: 'Признак прогноза (не факт)' })
     @IsOptional()

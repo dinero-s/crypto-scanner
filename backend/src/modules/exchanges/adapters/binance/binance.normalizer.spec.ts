@@ -89,19 +89,40 @@ describe('BinanceNormalizer', () => {
         });
     });
 
-    it('нормализует open interest', () => {
+    it('нормализует open interest с доступными данными', () => {
         const result = normalizeBinanceOpenInterest([
             {
                 symbol: 'BTCUSDT',
                 openInterest: '12345.678',
                 time: 1_700_000_000_000,
+                available: true,
             },
         ]);
 
         expect(result[0]).toMatchObject({
             symbol: 'BTC/USDT',
             openInterest: 12345.678,
+            openInterestAvailable: true,
+            openInterestSource: 'exchange',
             timestamp: 1_700_000_000_000,
+        });
+    });
+
+    it('сохраняет openInterest null для недоступного символа', () => {
+        const result = normalizeBinanceOpenInterest([
+            {
+                symbol: 'ETHUSDT',
+                openInterest: null,
+                time: 1_700_000_000_000,
+                available: false,
+            },
+        ]);
+
+        expect(result[0]).toMatchObject({
+            symbol: 'ETH/USDT',
+            openInterest: null,
+            openInterestAvailable: false,
+            openInterestSource: null,
         });
     });
 });

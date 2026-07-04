@@ -130,7 +130,14 @@ export function calculateAnnualizedBasisApr(
 }
 
 /** Минуты до следующего funding */
-export function calculateTimeToFundingMinutes(nextFundingTime: number, nowMs: number): number | null {
+export function calculateTimeToFundingMinutes(
+    nextFundingTime: number | null | undefined,
+    nowMs: number,
+): number | null {
+    if (nextFundingTime === undefined || nextFundingTime === null) {
+        return null;
+    }
+
     const next = toDecimal(nextFundingTime);
     if (!next || next.lte(0)) {
         return null;

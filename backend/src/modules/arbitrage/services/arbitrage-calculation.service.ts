@@ -88,6 +88,9 @@ export class ArbitrageCalculationService {
             if (!perp || !funding) {
                 continue;
             }
+            if (!this.filterService.passesQuoteAssetFilter(spot.quoteAsset)) {
+                continue;
+            }
 
             const input: FundingArbitrageInput = {
                 exchange: spot.exchange,
@@ -125,6 +128,9 @@ export class ArbitrageCalculationService {
         for (const [key, spot] of spotMap) {
             const perp = perpMap.get(key);
             if (!perp) {
+                continue;
+            }
+            if (!this.filterService.passesQuoteAssetFilter(spot.quoteAsset)) {
                 continue;
             }
 

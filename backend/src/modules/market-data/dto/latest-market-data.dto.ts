@@ -92,8 +92,8 @@ export class FundingRateResponseDto {
     @ApiPropertyOptional({ description: 'Predicted funding rate' })
     predictedFundingRate?: number;
 
-    @ApiProperty({ description: 'Следующее funding time' })
-    nextFundingTime: number;
+    @ApiPropertyOptional({ description: 'Следующее funding time (unix ms), если известно' })
+    nextFundingTime?: number | null;
 
     @ApiProperty({ description: 'Timestamp' })
     timestamp: number;

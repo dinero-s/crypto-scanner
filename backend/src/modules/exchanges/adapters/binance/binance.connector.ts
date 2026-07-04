@@ -13,6 +13,7 @@ import {
     BinanceBookTicker,
     BinanceFuturesSymbolInfo,
     BinanceFuturesTicker24hr,
+    BinanceOpenInterestFetchResult,
     BinanceOpenInterestResponse,
     BinancePremiumIndex,
     BinanceSpotSymbolInfo,
@@ -105,21 +106,56 @@ export class BinanceConnector extends BaseExchangeConnector {
                     item.quoteAsset === 'USDT' &&
                     item.status === 'TRADING',
             )
-            .slice(0, 50)
             .map((item) => item.symbol);
 
-        const openInterestItems: BinanceOpenInterestResponse[] = [];
-
-        for (const symbol of symbols) {
-            const item = await this.http.get<BinanceOpenInterestResponse>(
-                this.exchange,
-                `${futuresBase}/fapi/v1/openInterest`,
-                { symbol },
-            );
-            openInterestItems.push(item);
-        }
+        const openInterestItems = await this.fetchBinanceOpenInterestBatch(
+            futuresBase,
+            symbols,
+        );
 
         return normalizeBinanceOpenInterest(openInterestItems);
+    }
+
+    /** Параллельный сбор OI по всем perpetual symbols с per-symbol fallback */
+    private async fetchBinanceOpenInterestBatch(
+        futuresBase: string,
+        symbols: string[],
+        batchSize = 10,
+    ): Promise<BinanceOpenInterestFetchResult[]> {
+        const results: BinanceOpenInterestFetchResult[] = [];
+
+        for (let offset = 0; offset < symbols.length; offset += batchSize) {
+            const batch = symbols.slice(offset, offset + batchSize);
+            const batchResults = await Promise.all(
+                batch.map(async (symbol) => {
+                    try {
+                        const item = await this.http.get<BinanceOpenInterestResponse>(
+                            this.exchange,
+                            `${futuresBase}/fapi/v1/openInterest`,
+                            { symbol },
+                        );
+
+                        return {
+                            symbol: item.symbol,
+                            openInterest: item.openInterest,
+                            time: item.time,
+                            available: true,
+                        };
+                    } catch {
+                        return {
+                            symbol,
+                            openInterest: null,
+                            time: Date.now(),
+                            available: false,
+                        };
+                    }
+                }),
+            );
+
+            results.push(...batchResults);
+        }
+
+        return results;
     }
 
     protected async fetchInstruments(): Promise<NormalizedInstrument[]> {

@@ -140,7 +140,8 @@ export function normalizeGateFundingRates(
                 baseAsset,
                 quoteAsset,
                 fundingRate: parseExchangeNumber(item.r),
-                nextFundingTime: parseExchangeTimestamp(item.t),
+                nextFundingTime: null,
+                nextFundingTimeSource: null,
                 fundingIntervalHours: FUNDING_INTERVAL_HOURS,
                 timestamp: Date.now(),
             };

@@ -82,4 +82,9 @@ export class ArbitrageFilterService {
         }
         return netYieldPercent >= config.minNetYield;
     }
+
+    /** Только USDT-quoted рынки для сравнимых возможностей (Kraken USD исключён) */
+    passesQuoteAssetFilter(quoteAsset: string): boolean {
+        return quoteAsset === 'USDT';
+    }
 }

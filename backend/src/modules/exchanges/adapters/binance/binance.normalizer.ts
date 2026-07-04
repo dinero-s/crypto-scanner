@@ -46,6 +46,14 @@ export interface BinanceOpenInterestResponse {
     time: number;
 }
 
+/** Результат запроса OI по символу (включая недоступные) */
+export interface BinanceOpenInterestFetchResult {
+    symbol: string;
+    openInterest: string | null;
+    time: number;
+    available: boolean;
+}
+
 export interface BinanceSpotSymbolInfo {
     symbol: string;
     baseAsset: string;
@@ -144,21 +152,35 @@ export function normalizeBinanceFundingRates(
         });
 }
 
+function parseNullableOpenInterest(value: string | null | undefined): number | null {
+    if (value === undefined || value === null || value === '') {
+        return null;
+    }
+
+    const parsed = Number.parseFloat(value);
+    return Number.isFinite(parsed) ? parsed : null;
+}
+
 export function normalizeBinanceOpenInterest(
-    items: BinanceOpenInterestResponse[],
+    items: BinanceOpenInterestFetchResult[],
 ): NormalizedOpenInterest[] {
     return items
         .filter((item) => item.symbol.endsWith('USDT'))
         .map((item) => {
             const baseAsset = item.symbol.replace(/USDT$/, '');
             const quoteAsset = 'USDT';
+            const openInterest = item.available
+                ? parseNullableOpenInterest(item.openInterest)
+                : null;
 
             return {
                 exchange: ExchangeEnum.BINANCE,
                 symbol: buildUnifiedSymbol(baseAsset, quoteAsset),
                 baseAsset,
                 quoteAsset,
-                openInterest: parseExchangeNumber(item.openInterest),
+                openInterest,
+                openInterestAvailable: item.available && openInterest !== null,
+                openInterestSource: item.available ? ('exchange' as const) : null,
                 timestamp: parseExchangeTimestamp(item.time),
             };
         });

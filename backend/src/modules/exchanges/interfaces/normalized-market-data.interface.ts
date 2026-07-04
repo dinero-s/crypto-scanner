@@ -29,6 +29,12 @@ export interface NormalizedPerpTicker {
     timestamp: number;
 }
 
+/** Источник nextFundingTime */
+export type NextFundingTimeSource = 'exchange' | 'estimated';
+
+/** Источник predictedFundingRate */
+export type PredictedFundingRateSource = 'exchange' | 'fallback';
+
 /** Нормализованный funding rate */
 export interface NormalizedFundingRate {
     exchange: ExchangeEnum;
@@ -36,8 +42,10 @@ export interface NormalizedFundingRate {
     baseAsset: string;
     quoteAsset: string;
     fundingRate: number;
-    predictedFundingRate?: number;
-    nextFundingTime: number;
+    predictedFundingRate?: number | null;
+    predictedFundingRateSource?: PredictedFundingRateSource | null;
+    nextFundingTime?: number | null;
+    nextFundingTimeSource?: NextFundingTimeSource | null;
     fundingIntervalHours: number;
     timestamp: number;
 }
@@ -48,7 +56,9 @@ export interface NormalizedOpenInterest {
     symbol: string;
     baseAsset: string;
     quoteAsset: string;
-    openInterest: number;
+    openInterest: number | null;
+    openInterestAvailable?: boolean;
+    openInterestSource?: 'exchange' | null;
     openInterestValue?: number;
     timestamp: number;
 }

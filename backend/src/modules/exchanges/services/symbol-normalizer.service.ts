@@ -108,6 +108,21 @@ export class SymbolNormalizerService {
             return { base, quote: 'USD' };
         }
 
+        if (exchange === ExchangeEnum.KRAKEN && marketType === MarketTypeEnum.SPOT) {
+            if (nativeSymbol.endsWith('USDT')) {
+                return {
+                    base: nativeSymbol.slice(0, -4).replace('XBT', 'BTC'),
+                    quote: 'USDT',
+                };
+            }
+            if (nativeSymbol.endsWith('USD')) {
+                return {
+                    base: nativeSymbol.slice(0, -3).replace('XBT', 'BTC'),
+                    quote: 'USD',
+                };
+            }
+        }
+
         if (nativeSymbol.includes('/')) {
             const [base, quote] = nativeSymbol.split('/');
             return { base: base ?? nativeSymbol, quote: quote ?? 'USDT' };
@@ -117,6 +132,13 @@ export class SymbolNormalizerService {
             return {
                 base: nativeSymbol.slice(0, -4),
                 quote: 'USDT',
+            };
+        }
+
+        if (nativeSymbol.endsWith('USD')) {
+            return {
+                base: nativeSymbol.slice(0, -3),
+                quote: 'USD',
             };
         }
 

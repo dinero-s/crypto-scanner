@@ -60,7 +60,7 @@ describe('BybitNormalizer', () => {
         });
     });
 
-    it('нормализует funding rates из linear tickers', () => {
+    it('нормализует funding rates без ложного predictedFundingRate', () => {
         const result = normalizeBybitFundingRates(
             [
                 {
@@ -79,9 +79,11 @@ describe('BybitNormalizer', () => {
         expect(result[0]).toMatchObject({
             symbol: 'BTC/USDT',
             fundingRate: 0.00012,
-            predictedFundingRate: 0.00012,
+            predictedFundingRate: null,
+            predictedFundingRateSource: null,
             nextFundingTime: 1_700_028_800_000,
             fundingIntervalHours: 8,
         });
+        expect(result[0]?.predictedFundingRate).not.toBe(result[0]?.fundingRate);
     });
 });

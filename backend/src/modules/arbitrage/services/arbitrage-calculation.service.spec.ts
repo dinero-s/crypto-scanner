@@ -52,6 +52,9 @@ describe('ArbitrageCalculationService', () => {
                         passesFundingRateFilter: jest.fn().mockReturnValue(true),
                         passesSpreadFilter: jest.fn().mockReturnValue(true),
                         passesNetYieldFilter: jest.fn().mockImplementation((net: number) => net > 0),
+                        passesQuoteAssetFilter: jest.fn().mockImplementation(
+                            (quote: string) => quote === 'USDT',
+                        ),
                     },
                 },
             ],
@@ -184,6 +187,55 @@ describe('ArbitrageCalculationService', () => {
         };
 
         const results = service.calculateCashCarryOpportunities(data, baseConfig, nowMs);
+        expect(results).toHaveLength(0);
+    });
+
+    it('исключает Kraken USD пары из funding opportunities', () => {
+        const data = {
+            spot: [
+                {
+                    exchange: ExchangeEnum.KRAKEN,
+                    symbol: 'BTC/USD',
+                    baseAsset: 'BTC',
+                    quoteAsset: 'USD',
+                    bid: 64_999,
+                    ask: 65_000,
+                    last: 65_000,
+                    volume24h: 5_000_000,
+                    timestamp: nowMs,
+                },
+            ],
+            perp: [
+                {
+                    exchange: ExchangeEnum.KRAKEN,
+                    symbol: 'BTC/USD',
+                    baseAsset: 'BTC',
+                    quoteAsset: 'USD',
+                    bid: 65_100,
+                    ask: 65_101,
+                    last: 65_100,
+                    markPrice: 65_100,
+                    indexPrice: 65_000,
+                    volume24h: 5_000_000,
+                    openInterest: 1000,
+                    timestamp: nowMs,
+                },
+            ],
+            funding: [
+                {
+                    exchange: ExchangeEnum.KRAKEN,
+                    symbol: 'BTC/USD',
+                    baseAsset: 'BTC',
+                    quoteAsset: 'USD',
+                    fundingRate: 0.001,
+                    nextFundingTime: nowMs + 3_600_000,
+                    fundingIntervalHours: 1,
+                    timestamp: nowMs,
+                },
+            ],
+        };
+
+        const results = service.calculateFundingOpportunities(data, baseConfig, nowMs);
         expect(results).toHaveLength(0);
     });
 });

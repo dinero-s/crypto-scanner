@@ -28,7 +28,7 @@ export interface FundingArbitrageInput {
     volume24h: number;
     fundingRate: number;
     predictedFundingRate?: number;
-    nextFundingTime: number;
+    nextFundingTime?: number;
     fundingIntervalHours: number;
 }
 

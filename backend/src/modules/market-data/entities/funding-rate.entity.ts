@@ -29,8 +29,8 @@ export class FundingRateEntity {
     @DatabaseProp({ type: Number, default: null })
     predictedFundingRate?: number;
 
-    @DatabaseProp({ type: Number, required: true })
-    nextFundingTime: number;
+    @DatabaseProp({ type: Number, default: null })
+    nextFundingTime?: number | null;
 
     @DatabaseProp({ type: Number, required: true })
     fundingIntervalHours: number;

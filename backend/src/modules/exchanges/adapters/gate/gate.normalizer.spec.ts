@@ -46,7 +46,7 @@ describe('GateNormalizer', () => {
         expect(result[0]?.markPrice).toBe(65010);
     });
 
-    it('нормализует funding rates', () => {
+    it('нормализует funding rates без ложного nextFundingTime', () => {
         const result = normalizeGateFundingRates([
             { t: 1_700_028_800_000, r: '0.0001', contract: 'BTC_USDT' },
         ]);
@@ -54,6 +54,9 @@ describe('GateNormalizer', () => {
         expect(result[0]).toMatchObject({
             symbol: 'BTC/USDT',
             fundingRate: 0.0001,
+            nextFundingTime: null,
+            nextFundingTimeSource: null,
+            fundingIntervalHours: 8,
         });
     });
 });
