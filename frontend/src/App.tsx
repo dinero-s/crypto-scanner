@@ -10,7 +10,6 @@ import { LoadingState } from './components/ui/StateBlocks';
 import { AuthProvider } from './context/AuthContext';
 import { AdminAuthProvider } from './context/AdminAuthContext';
 import { LoginPage } from './pages/LoginPage';
-import { HomePage } from './pages/HomePage';
 import { MiniAppRoutes } from './mini-app/MiniAppRoutes';
 
 const AdminLayout = lazy(() =>
@@ -71,7 +70,7 @@ export default function App() {
 
               <Route element={<ProtectedRoute />}>
                 <Route element={<AppLayout />}>
-                  <Route path="/" element={<HomePage />} />
+                  <Route path="/" element={<Navigate to="/mini-app" replace />} />
                 </Route>
               </Route>
 

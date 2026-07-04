@@ -2,7 +2,9 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import styles from './AppLayout.module.css';
 
-const NAV_ITEMS = [{ to: '/', label: 'Главная', icon: '🏠' }] as const;
+const NAV_ITEMS = [
+  { to: '/mini-app', label: 'Сканер', icon: '📊' },
+] as const;
 
 export function AppLayout() {
   const { logout, email } = useAuth();
@@ -28,7 +30,7 @@ export function AppLayout() {
             <NavLink
               key={item.to}
               to={item.to}
-              end={item.to === '/'}
+              end={item.to === '/mini-app'}
               className={({ isActive }) =>
                 isActive ? `${styles.link} ${styles.active}` : styles.link
               }

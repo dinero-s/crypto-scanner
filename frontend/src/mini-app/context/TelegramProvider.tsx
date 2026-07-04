@@ -50,6 +50,11 @@ export function TelegramProvider({ children }: { children: ReactNode }) {
   const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (WebApp.platform === 'unknown') {
+      setIsReady(true);
+      return;
+    }
+
     WebApp.ready();
     WebApp.expand();
     document.documentElement.dataset.telegramTheme = WebApp.colorScheme;
