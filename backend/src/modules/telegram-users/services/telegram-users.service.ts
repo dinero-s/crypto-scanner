@@ -1,8 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TelegramAuthDto, UpdateTelegramUserDto } from '../dto/telegram-user.dto';
 import { TelegramUsersRepository } from '../repositories/telegram-users.repository';
 import { SubscriptionStatusEnum } from '../enums/subscription-status.enum';
+import { TelegramInitDataService } from './telegram-init-data.service';
 
 /** Бизнес-логика Telegram-пользователей */
 @Injectable()
@@ -12,16 +13,41 @@ export class TelegramUsersService {
     constructor(
         private readonly telegramUsersRepository: TelegramUsersRepository,
         private readonly configService: ConfigService,
+        private readonly initDataService: TelegramInitDataService,
     ) {}
 
-    /** Авторизация через initData (заглушка — валидация на этапе 2) */
+    /** Авторизация через initData с HMAC-валидацией */
     async authenticate(dto: TelegramAuthDto) {
-        this.logger.log('authenticate via initData — заглушка');
         const botToken = this.configService.get<string>('telegram.botToken');
         if (!botToken) {
-            this.logger.warn('TELEGRAM_BOT_TOKEN не задан');
+            throw new UnauthorizedException('TELEGRAM_BOT_TOKEN не задан');
         }
-        return { authenticated: false, message: 'Not implemented' };
+
+        const validated = this.initDataService.validateInitData(dto.initData);
+        const user = validated.user;
+
+        const doc = await this.upsertUser({
+            telegramId: String(user.id),
+            chatId: String(user.id),
+            username: user.username,
+            firstName: user.first_name,
+            lastName: user.last_name,
+            languageCode: user.language_code ?? 'ru',
+        });
+
+        this.logger.log(`authenticated telegramId=${String(user.id)}`);
+
+        return {
+            authenticated: true,
+            user: {
+                telegramId: doc.telegramId,
+                username: doc.username,
+                firstName: doc.firstName,
+                lastName: doc.lastName,
+                subscriptionStatus: doc.subscriptionStatus,
+                languageCode: doc.languageCode,
+            },
+        };
     }
 
     /** Получить или создать пользователя */

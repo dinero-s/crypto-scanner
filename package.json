@@ -1,0 +1,18 @@
+{
+  "name": "crypto-scanner",
+  "private": true,
+  "description": "Crypto arbitrage scanner — NestJS + React monorepo",
+  "scripts": {
+    "start:dev": "npm run start:dev --prefix backend",
+    "dev:backend": "npm run start:dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "lint": "npm run lint --prefix backend && npm run lint --prefix frontend",
+    "test": "npm run test --prefix backend && npm run test --prefix frontend",
+    "test:e2e": "npm run test:e2e --prefix backend",
+    "build": "npm run build --prefix backend && npm run build --prefix frontend",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:build": "docker compose build",
+    "docker:nginx": "docker compose --profile nginx up -d"
+  }
+}

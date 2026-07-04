@@ -12,6 +12,7 @@ import { ScannerQueueProducerService } from './services/scanner-queue.producer.s
 import { MarketDataModule } from 'src/modules/market-data/market-data.module';
 import { ArbitrageModule } from 'src/modules/arbitrage/arbitrage.module';
 import { AlertsModule } from 'src/modules/alerts/alerts.module';
+import { QueueGracefulShutdownService } from 'src/common/queue/queue-graceful-shutdown.service';
 
 /** BullMQ очереди: example + scanner pipeline */
 @Module({
@@ -44,6 +45,7 @@ import { AlertsModule } from 'src/modules/alerts/alerts.module';
         MarketDataCollectProcessor,
         ArbitrageCalculateProcessor,
         ScannerQueueProducerService,
+        QueueGracefulShutdownService,
     ],
     exports: [ExampleQueueService, ScannerQueueProducerService],
 })

@@ -13,6 +13,7 @@ import RedisConfig from 'src/configs/redis.config';
 import TelegramConfig from 'src/configs/telegram.config';
 import ExchangesConfig from 'src/configs/exchanges.config';
 import ScannerConfig from 'src/configs/scanner.config';
+import AlertsConfig from 'src/configs/alerts.config';
 
 export default [
     AppConfig,
@@ -30,4 +31,5 @@ export default [
     TelegramConfig,
     ExchangesConfig,
     ScannerConfig,
+    AlertsConfig,
 ];

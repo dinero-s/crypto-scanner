@@ -8,5 +8,8 @@ export default registerAs(
         miniAppUrl: process.env.TELEGRAM_MINI_APP_URL ?? '',
         usePolling: process.env.TELEGRAM_USE_POLLING === 'true',
         webhookSecret: process.env.TELEGRAM_WEBHOOK_SECRET ?? '',
+        initDataMaxAgeSec: process.env.TELEGRAM_INIT_DATA_MAX_AGE_SEC
+            ? Number.parseInt(process.env.TELEGRAM_INIT_DATA_MAX_AGE_SEC, 10)
+            : 86_400,
     }),
 );

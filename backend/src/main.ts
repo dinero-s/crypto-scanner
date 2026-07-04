@@ -129,6 +129,8 @@ async function bootstrap() {
 
     app.use(helmet(helmetOptions));
 
+    app.enableShutdownHooks();
+
     // Swagger: относительный импорт — в dist алиас `src/*` не резолвится, иначе require('src/swagger') падает.
     try {
         const swaggerModule = await import('./swagger');
