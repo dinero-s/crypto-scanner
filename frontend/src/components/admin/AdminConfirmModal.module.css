@@ -8,25 +8,25 @@
 }
 
 .modal {
-  background: var(--ozon-surface);
-  border: 1px solid var(--ozon-border);
-  border-radius: var(--ozon-radius-md);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-md);
   padding: 24px;
   width: min(480px, calc(100vw - 2rem));
-  box-shadow: var(--ozon-shadow-md);
-  font-family: var(--ozon-font);
+  box-shadow: var(--app-shadow-md);
+  font-family: var(--app-font);
 }
 
 .modal h3 {
   margin: 0 0 8px;
   font-size: 18px;
   font-weight: 600;
-  color: var(--ozon-text);
+  color: var(--app-text);
 }
 
 .modal p {
   margin: 0 0 16px;
-  color: var(--ozon-text-secondary);
+  color: var(--app-text-secondary);
   font-size: 14px;
   line-height: 1.45;
 }

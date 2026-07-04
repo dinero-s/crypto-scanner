@@ -14,7 +14,7 @@ export function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
 
   if (isAuth) {
-    return <Navigate to="/admin/overview" replace />;
+    return <Navigate to="/admin/users" replace />;
   }
 
   return (
@@ -22,7 +22,7 @@ export function AdminLoginPage() {
       <div className={loginStyles.panel}>
         <PageHeader
           title="Вход администратора"
-          subtitle="Панель управления AI Marketplace Operator"
+          subtitle="Панель администратора crypto-scanner"
         />
         <Card>
           <form

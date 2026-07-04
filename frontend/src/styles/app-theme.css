@@ -1,0 +1,27 @@
+/* Глобальная тема приложения */
+:root {
+  --app-blue: #005bff;
+  --app-blue-hover: #004ed8;
+  --app-blue-soft: #e6f0ff;
+  --app-blue-muted: rgba(0, 91, 255, 0.1);
+  --app-bg: #f2f4f7;
+  --app-surface: #ffffff;
+  --app-surface-muted: #f8fafc;
+  --app-text: #001a34;
+  --app-text-secondary: #808d9a;
+  --app-text-muted: #96a3ae;
+  --app-border: #e5eaf0;
+  --app-border-strong: #d3dae6;
+  --app-success-text: #0a9e3a;
+  --app-success-bg: rgba(16, 196, 76, 0.12);
+  --app-warning-text: #e67e00;
+  --app-warning-bg: rgba(255, 152, 0, 0.12);
+  --app-danger-text: #d6003a;
+  --app-danger-bg: rgba(249, 17, 85, 0.1);
+  --app-sidebar-width: 240px;
+  --app-radius-sm: 8px;
+  --app-radius-md: 12px;
+  --app-shadow-sm: 0 1px 2px rgba(0, 26, 52, 0.04);
+  --app-shadow-md: 0 2px 8px rgba(0, 26, 52, 0.06);
+  --app-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}

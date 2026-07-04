@@ -2,14 +2,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import styles from './AppLayout.module.css';
 
-const NAV_ITEMS = [
-  { to: '/ozon/dashboard', label: 'Dashboard', icon: '📊' },
-  { to: '/ozon/audit', label: 'AI Аудит', icon: '📋' },
-  { to: '/ozon/connections', label: 'Подключения', icon: '🔗' },
-  { to: '/ozon/products', label: 'Товары', icon: '📦' },
-  { to: '/ozon/competitors', label: 'Конкуренты', icon: '🎯' },
-  { to: '/ozon/alerts', label: 'Alerts', icon: '🔔' },
-];
+const NAV_ITEMS = [{ to: '/', label: 'Главная', icon: '🏠' }] as const;
 
 export function AppLayout() {
   const { logout, email } = useAuth();
@@ -24,10 +17,10 @@ export function AppLayout() {
     <div className={styles.shell}>
       <aside className={styles.sidebar}>
         <div className={styles.brand}>
-          <span className={styles.logo}>O</span>
+          <span className={styles.logo}>C</span>
           <div>
-            <strong>Ozon Operator</strong>
-            <small>Marketplace SaaS</small>
+            <strong>crypto-scanner</strong>
+            <small>Личный кабинет</small>
           </div>
         </div>
         <nav className={styles.nav}>
@@ -35,10 +28,9 @@ export function AppLayout() {
             <NavLink
               key={item.to}
               to={item.to}
+              end={item.to === '/'}
               className={({ isActive }) =>
-                isActive
-                  ? `${styles.link} ${styles.active}`
-                  : `${styles.link}${'muted' in item && item.muted ? ` ${styles.mutedLink}` : ''}`
+                isActive ? `${styles.link} ${styles.active}` : styles.link
               }
             >
               <span>{item.icon}</span>

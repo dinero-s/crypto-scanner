@@ -1,4 +1,4 @@
-import { ApiError, assertNotMarketplaceDirectRequest } from '../marketplaceGuard';
+import { ApiError } from '../errors';
 import { clearAdminTokens, getAdminAccessToken } from './adminAuthStorage';
 
 const ADMIN_API_BASE = '/api/admin';
@@ -8,7 +8,6 @@ export async function adminFetch<T>(
   options: RequestInit = {},
 ): Promise<T> {
   const url = path.startsWith('http') ? path : `${ADMIN_API_BASE}${path}`;
-  assertNotMarketplaceDirectRequest(url);
 
   const headers: HeadersInit = {
     'Content-Type': 'application/json',

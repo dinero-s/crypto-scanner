@@ -24,11 +24,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from './modules/users/users.module';
 import { AdminUsersModule } from './modules/admin-users/admin-users.module';
 import { RolesGuard } from './modules/admin-users/guards/roles.guard';
-import { AdminWriteGuard } from './modules/admin-panel/guards/admin-write.guard';
 import { AuditLogModule } from './modules/audit-log/audit-log.module';
 import { AdminAuditLogInterceptor } from './modules/audit-log/interceptors/admin-audit-log.interceptor';
 import { throttlerOptions } from './configs/throttler.config';
-import { AdminPanelModule } from './modules/admin-panel/admin-panel.module';
 
 @Module({
     controllers: [],
@@ -45,10 +43,6 @@ import { AdminPanelModule } from './modules/admin-panel/admin-panel.module';
         {
             provide: APP_GUARD,
             useClass: RolesGuard,
-        },
-        {
-            provide: APP_GUARD,
-            useClass: AdminWriteGuard,
         },
         {
             provide: APP_GUARD,
@@ -71,7 +65,6 @@ import { AdminPanelModule } from './modules/admin-panel/admin-panel.module';
         UsersModule,
         AdminUsersModule,
         AuditLogModule,
-        AdminPanelModule,
         ThrottlerModule.forRootAsync(throttlerOptions),
         JwtModule.registerAsync({
             imports: [ConfigModule],

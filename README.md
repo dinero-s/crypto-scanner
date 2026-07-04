@@ -1,12 +1,12 @@
-# AI Marketplace Operator
+# crypto-scanner
 
-Monorepo: NestJS backend + React frontend для Ozon Marketplace Operator MVP.
+Monorepo: NestJS backend + React frontend — стартовый каркас для нового проекта.
 
 ## Структура
 
 ```
 backend/   — NestJS API (MongoDB, Redis, BullMQ)
-frontend/  — React + Vite UI (только /api/user/ozon/*)
+frontend/  — React + Vite UI
 ```
 
 ## Backend
@@ -49,6 +49,19 @@ docker compose up -d mongo redis
 
 Затем перезапустите backend: `npm run start:dev`
 
-## Compliance
+## Dev-учётные записи
 
-Frontend **не** делает прямых запросов к Ozon. Все интеграции — только через backend и официальные API.
+```bash
+cd backend
+npm run seed:dev
+```
+
+- Админ: `admin@crypto-scanner.test` / `Admin123` → `/admin/login`
+- Пользователь: `dev@crypto-scanner.test` / `Test123` → `/login`
+
+## Админ-панель
+
+После входа администратора доступны разделы:
+
+- **Пользователи** — список, блокировка, детали
+- **Журнал аудита** — действия администраторов

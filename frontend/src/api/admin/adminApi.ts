@@ -1,20 +1,13 @@
 import { adminFetch } from './adminHttpClient';
 import type {
-  AdminAlert,
-  AdminAuditLog,
-  AdminComplianceLog,
-  AdminConnection,
-  AdminConnectionDetail,
-  AdminFeatureFlags,
-  AdminHealth,
-  AdminJob,
+  AdminAuditLogDetail,
+  AdminAuditLogRow,
   AdminListParams,
-  AdminOverview,
-  AdminRecommendation,
-  AdminUser,
   AdminUserDetail,
+  AdminUserRow,
   PaginatedResponse,
 } from './adminTypes';
+import { mapUserStatus } from '../../utils/format';
 
 function buildQuery(params?: AdminListParams): string {
   if (!params) return '';
@@ -26,6 +19,100 @@ function buildQuery(params?: AdminListParams): string {
   }
   const qs = search.toString();
   return qs ? `?${qs}` : '';
+}
+
+type RawUser = {
+  _id?: string;
+  id?: string;
+  email?: string;
+  fullName?: string;
+  role?: string;
+  isBlocked?: boolean;
+  isDisabled?: boolean;
+  createdAt?: string;
+  registrationDate?: string;
+  lastLoginAt?: string;
+  phone?: string;
+  city?: string;
+  isEmailConfirmed?: boolean;
+  blockReason?: string;
+};
+
+type RawAuditRow = {
+  id: string;
+  type?: string;
+  date?: string;
+  action?: string;
+  email?: string;
+  userIp?: string;
+  reason?: string;
+  user?: { _id?: string };
+};
+
+type RawAuditDetail = {
+  id: string;
+  createdAt?: string;
+  adminEmail?: string;
+  action?: string;
+  objectName?: string;
+  entityId?: string;
+  summary?: string;
+  reason?: string;
+  status?: string;
+  executionResult?: string;
+  category?: string;
+};
+
+function mapUser(row: RawUser): AdminUserRow {
+  const id = row.id ?? row._id ?? '';
+  return {
+    id,
+    email: row.email ?? '',
+    name: row.fullName ?? '',
+    role: row.role ?? 'user',
+    status: mapUserStatus(row),
+    createdAt: row.createdAt ?? row.registrationDate,
+    lastLoginAt: row.lastLoginAt,
+  };
+}
+
+function mapUserDetail(row: RawUser): AdminUserDetail {
+  return {
+    ...mapUser(row),
+    phone: row.phone,
+    city: row.city,
+    isEmailConfirmed: row.isEmailConfirmed,
+    blockReason: row.blockReason,
+  };
+}
+
+function mapAuditRow(row: RawAuditRow): AdminAuditLogRow {
+  return {
+    id: row.id,
+    createdAt: row.date ?? '',
+    actorEmail: row.email ?? '',
+    action: row.action ?? '',
+    entityType: row.type ?? '',
+    entityId: row.user?._id,
+    message: row.action ?? '',
+    reason: row.reason,
+    userIp: row.userIp,
+  };
+}
+
+function mapAuditDetail(row: RawAuditDetail): AdminAuditLogDetail {
+  return {
+    id: row.id,
+    createdAt: row.createdAt ?? '',
+    actorEmail: row.adminEmail ?? '',
+    action: row.action ?? '',
+    entityType: row.category ?? row.objectName ?? '',
+    entityId: row.entityId,
+    message: row.summary ?? '',
+    reason: row.reason,
+    status: row.status,
+    executionResult: row.executionResult,
+  };
 }
 
 export async function adminLogin(payload: {
@@ -51,87 +138,41 @@ export async function adminLogin(payload: {
   }>;
 }
 
-export const getAdminOverview = () => adminFetch<AdminOverview>('/overview');
+export async function getAdminUsers(params?: AdminListParams) {
+  const response = await adminFetch<PaginatedResponse<RawUser>>(`/users${buildQuery(params)}`);
+  return {
+    ...response,
+    data: response.data.map(mapUser),
+  };
+}
 
-export const getAdminUsers = (params?: AdminListParams) =>
-  adminFetch<PaginatedResponse<AdminUser>>(`/users${buildQuery(params)}`);
+export async function getAdminUserById(id: string) {
+  const response = await adminFetch<RawUser>(`/users/${id}`);
+  return mapUserDetail(response);
+}
 
-export const getAdminUserById = (id: string) =>
-  adminFetch<AdminUserDetail>(`/users/${id}`);
-
-export const blockAdminUser = (id: string, reason: string) =>
-  adminFetch(`/users/${id}/block`, {
-    method: 'PATCH',
+export async function blockAdminUser(id: string, reason: string) {
+  return adminFetch(`/users/${id}/block`, {
+    method: 'PUT',
     body: JSON.stringify({ reason }),
   });
+}
 
-export const unblockAdminUser = (id: string) =>
-  adminFetch(`/users/${id}/unblock`, { method: 'PATCH' });
+export async function unblockAdminUser(id: string) {
+  return adminFetch(`/users/${id}/unblock`, { method: 'PUT' });
+}
 
-export const changeAdminUserRole = (id: string, role: string) =>
-  adminFetch(`/users/${id}/role`, {
-    method: 'PATCH',
-    body: JSON.stringify({ role }),
-  });
-
-export const getAdminConnections = (params?: AdminListParams) =>
-  adminFetch<PaginatedResponse<AdminConnection>>(`/connections${buildQuery(params)}`);
-
-export const getAdminConnectionById = (id: string) =>
-  adminFetch<AdminConnectionDetail>(`/connections/${id}`);
-
-export const runAdminConnectionHealth = (id: string) =>
-  adminFetch(`/connections/${id}/health`, { method: 'POST' });
-
-export const runAdminConnectionSync = (id: string) =>
-  adminFetch(`/connections/${id}/sync`, { method: 'POST' });
-
-export const pauseAdminConnection = (id: string) =>
-  adminFetch(`/connections/${id}/pause`, { method: 'PATCH' });
-
-export const resumeAdminConnection = (id: string) =>
-  adminFetch(`/connections/${id}/resume`, { method: 'PATCH' });
-
-export const deleteAdminConnection = (id: string) =>
-  adminFetch(`/connections/${id}`, { method: 'DELETE' });
-
-export const getAdminJobs = (params?: AdminListParams) =>
-  adminFetch<PaginatedResponse<AdminJob>>(`/jobs${buildQuery(params)}`);
-
-export const getAdminJobById = (id: string) => adminFetch<AdminJob>(`/jobs/${id}`);
-
-export const retryAdminJob = (id: string) =>
-  adminFetch(`/jobs/${id}/retry`, { method: 'POST' });
-
-export const cancelAdminJob = (id: string) =>
-  adminFetch(`/jobs/${id}/cancel`, { method: 'POST' });
-
-export const getAdminComplianceLogs = (params?: AdminListParams) =>
-  adminFetch<PaginatedResponse<AdminComplianceLog> & { summary?: { blockedLast24h: number; allowedLast24h: number } }>(
-    `/compliance-logs${buildQuery(params)}`,
+export async function getAdminAuditLogs(params?: AdminListParams) {
+  const response = await adminFetch<PaginatedResponse<RawAuditRow>>(
+    `/audit-log${buildQuery(params)}`,
   );
+  return {
+    ...response,
+    data: response.data.map(mapAuditRow),
+  };
+}
 
-export const getAdminComplianceLogById = (id: string) =>
-  adminFetch<AdminComplianceLog>(`/compliance-logs/${id}`);
-
-export const getAdminAuditLogs = (params?: AdminListParams) =>
-  adminFetch<PaginatedResponse<AdminAuditLog>>(`/audit-logs${buildQuery(params)}`);
-
-export const getAdminAuditLogById = (id: string) =>
-  adminFetch<AdminAuditLog>(`/audit-logs/${id}`);
-
-export const getAdminAlerts = (params?: AdminListParams) =>
-  adminFetch<PaginatedResponse<AdminAlert>>(`/alerts${buildQuery(params)}`);
-
-export const getAdminAlertById = (id: string) =>
-  adminFetch<AdminAlert>(`/alerts/${id}`);
-
-export const getAdminRecommendations = (params?: AdminListParams) =>
-  adminFetch<PaginatedResponse<AdminRecommendation>>(`/recommendations${buildQuery(params)}`);
-
-export const getAdminRecommendationById = (id: string) =>
-  adminFetch<AdminRecommendation>(`/recommendations/${id}`);
-
-export const getAdminHealth = () => adminFetch<AdminHealth>('/health');
-
-export const getAdminFeatureFlags = () => adminFetch<AdminFeatureFlags>('/feature-flags');
+export async function getAdminAuditLogById(id: string) {
+  const response = await adminFetch<RawAuditDetail>(`/audit-log/${id}`);
+  return mapAuditDetail(response);
+}

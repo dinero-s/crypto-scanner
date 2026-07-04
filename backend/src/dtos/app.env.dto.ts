@@ -249,4 +249,26 @@ export class AppEnvDto {
     @IsOptional()
     @IsString()
     CORS_ALLOW_ORIGINS?: string;
+
+    @IsOptional()
+    @IsString()
+    TELEGRAM_BOT_TOKEN?: string;
+
+    @IsOptional()
+    @IsString()
+    TELEGRAM_MINI_APP_URL?: string;
+
+    @IsOptional()
+    @IsBoolean()
+    @Type(() => Boolean)
+    TELEGRAM_ALERTS_ENABLED?: boolean;
+
+    @IsOptional()
+    @IsBoolean()
+    @Type(() => Boolean)
+    SCANNER_JOBS_ENABLED?: boolean;
+
+    @IsOptional()
+    @IsString()
+    SCANNER_DEFAULT_SYMBOLS?: string;
 }

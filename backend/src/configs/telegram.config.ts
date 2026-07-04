@@ -1,0 +1,10 @@
+import { registerAs } from '@nestjs/config';
+
+export default registerAs(
+    'telegram',
+    (): Record<string, unknown> => ({
+        botToken: process.env.TELEGRAM_BOT_TOKEN ?? '',
+        alertsEnabled: process.env.TELEGRAM_ALERTS_ENABLED !== 'false',
+        miniAppUrl: process.env.TELEGRAM_MINI_APP_URL ?? '',
+    }),
+);

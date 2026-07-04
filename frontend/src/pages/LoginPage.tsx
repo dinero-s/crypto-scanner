@@ -12,7 +12,7 @@ export function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as { from?: string } | null)?.from ?? '/ozon/dashboard';
+  const from = (location.state as { from?: string } | null)?.from ?? '/';
 
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
@@ -64,10 +64,10 @@ export function LoginPage() {
     <div className={loginStyles.page}>
       <div className={loginStyles.panel}>
         <PageHeader
-          title="Ozon Operator"
+          title="crypto-scanner"
           subtitle={
             mode === 'login'
-              ? 'Войдите для доступа к API'
+              ? 'Войдите в личный кабинет'
               : 'Создайте аккаунт'
           }
         />
@@ -139,7 +139,6 @@ export function LoginPage() {
         </Card>
 
         <p className={loginStyles.hint}>
-          API Ozon доступен только авторизованным пользователям.
           После регистрации подтвердите email, если это требуется backend.
         </p>
       </div>

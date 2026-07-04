@@ -4,10 +4,6 @@ export function canAdminWrite(role: string | null): boolean {
   return role !== 'readonly' && role !== null;
 }
 
-export function canAdminManageConnections(role: string | null): boolean {
-  return canAdminWrite(role) && role !== 'compliance';
-}
-
 export function canAdminBlockUsers(role: string | null): boolean {
   return canAdminWrite(role) && role !== 'compliance';
 }

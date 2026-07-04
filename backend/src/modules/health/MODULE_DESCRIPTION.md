@@ -1,20 +1,15 @@
 # Health
 
 ## Назначение
-Проверки работоспособности приложения: liveness и readiness для оркестратора.
+Healthchecks: liveness, readiness (MongoDB + Redis + collectors), scanner status.
 
 ## Структура
-- controllers: `health.controller.ts` (подключён напрямую в модуле, не через router)
-- services: нет
-- dto/entities: нет
-
-## Основные потоки
-- `GET /health/live` — приложение запущено.
-- `GET /health/ready` — MongoDB и Redis доступны; при сбое — 503.
+- `health.controller.ts` — `/health/live`, `/health/ready`, `/health/scanner`
+- `services/scanner-health.service.ts` — статус collectors
 
 ## Зависимости
-- `ConfigModule` (параметры Redis), `@DatabaseConnection()` для MongoDB.
-- Импортируется в `RoutesPublicModule` (публичные эндпоинты, `@Public()`).
+- `market-data` — collector status
 
 ## Что читать при изменениях
-- `health.module.ts`, `health.controller.ts`.
+- `health.controller.ts`
+- `services/scanner-health.service.ts`

@@ -1,0 +1,69 @@
+import { ExchangeEnum, MarketTypeEnum } from '../enums/exchange.enum';
+
+/** Нормализованный spot-тикер */
+export interface NormalizedSpotTicker {
+    exchange: ExchangeEnum;
+    symbol: string;
+    baseAsset: string;
+    quoteAsset: string;
+    bid: number;
+    ask: number;
+    last: number;
+    volume24h: number;
+    timestamp: number;
+}
+
+/** Нормализованный perpetual-тикер */
+export interface NormalizedPerpTicker {
+    exchange: ExchangeEnum;
+    symbol: string;
+    baseAsset: string;
+    quoteAsset: string;
+    bid: number;
+    ask: number;
+    last: number;
+    markPrice: number;
+    indexPrice: number;
+    volume24h: number;
+    openInterest: number;
+    timestamp: number;
+}
+
+/** Нормализованный funding rate */
+export interface NormalizedFundingRate {
+    exchange: ExchangeEnum;
+    symbol: string;
+    baseAsset: string;
+    quoteAsset: string;
+    fundingRate: number;
+    predictedFundingRate?: number;
+    nextFundingTime: number;
+    fundingIntervalHours: number;
+    timestamp: number;
+}
+
+/** Нормализованный open interest */
+export interface NormalizedOpenInterest {
+    exchange: ExchangeEnum;
+    symbol: string;
+    baseAsset: string;
+    quoteAsset: string;
+    openInterest: number;
+    openInterestValue?: number;
+    timestamp: number;
+}
+
+/** Нормализованный инструмент */
+export interface NormalizedInstrument {
+    exchange: ExchangeEnum;
+    marketType: MarketTypeEnum;
+    symbol: string;
+    baseAsset: string;
+    quoteAsset: string;
+    status: string;
+    contractType?: string;
+    tickSize?: number;
+    stepSize?: number;
+    minQty?: number;
+    maxQty?: number;
+}

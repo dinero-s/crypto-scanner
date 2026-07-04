@@ -1,5 +1,5 @@
 services:
-    ai-marketplace:
+    crypto-scanner-backend:
         image: ${BACKEND_IMAGE:-nestjs-backend-local}
         env_file:
             - ./backend/.env

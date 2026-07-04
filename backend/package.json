@@ -1,7 +1,7 @@
 {
-    "name": "nestjs-backend-template",
+    "name": "crypto-scanner-backend",
     "version": "0.0.1",
-    "description": "Universal NestJS backend template with MongoDB, Redis, BullMQ",
+    "description": "crypto-scanner NestJS backend (MongoDB, Redis, BullMQ)",
     "author": "",
     "private": true,
     "license": "UNLICENSED",

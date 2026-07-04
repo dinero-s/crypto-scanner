@@ -12,12 +12,12 @@
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.25;
-  color: var(--ozon-text);
+  color: var(--app-text);
 }
 
 .header p {
   margin: 6px 0 0;
-  color: var(--ozon-text-secondary);
+  color: var(--app-text-secondary);
   font-size: 14px;
   line-height: 1.5;
 }
@@ -42,7 +42,7 @@
   margin: 0 0 16px;
   font-size: 16px;
   font-weight: 600;
-  color: var(--ozon-text);
+  color: var(--app-text);
 }
 
 .card p {
@@ -60,7 +60,7 @@
   justify-content: center;
   gap: 6px;
   padding: 9px 16px;
-  border-radius: var(--ozon-radius-sm);
+  border-radius: var(--app-radius-sm);
   border: none;
   font-size: 14px;
   font-weight: 500;
@@ -90,26 +90,26 @@
 }
 
 .secondary {
-  background: var(--ozon-surface);
-  color: var(--ozon-text);
-  border: 1px solid var(--ozon-border);
+  background: var(--app-surface);
+  color: var(--app-text);
+  border: 1px solid var(--app-border);
 }
 
 .secondary:not(:disabled):hover {
-  background: var(--ozon-bg);
+  background: var(--app-bg);
   opacity: 1;
 }
 
 .danger {
-  background: var(--ozon-danger-bg);
-  color: var(--ozon-danger-text);
+  background: var(--app-danger-bg);
+  color: var(--app-danger-text);
   border: 1px solid rgba(249, 17, 85, 0.2);
 }
 
 .ghost {
   background: transparent;
-  color: var(--ozon-blue);
-  border: 1px solid var(--ozon-blue-muted);
+  color: var(--app-blue);
+  border: 1px solid var(--app-blue-muted);
 }
 
 .badge {
@@ -123,18 +123,18 @@
 }
 
 .neutral {
-  background: var(--ozon-surface-muted);
-  color: var(--ozon-text-secondary);
+  background: var(--app-surface-muted);
+  color: var(--app-text-secondary);
 }
 
 .success {
-  background: var(--ozon-success-bg);
-  color: var(--ozon-success-text);
+  background: var(--app-success-bg);
+  color: var(--app-success-text);
 }
 
 .warning {
-  background: var(--ozon-warning-bg);
-  color: var(--ozon-warning-text);
+  background: var(--app-warning-bg);
+  color: var(--app-warning-text);
 }
 
 .info {
@@ -149,10 +149,10 @@
 .tableWrap {
   overflow-x: auto;
   margin-bottom: 16px;
-  border: 1px solid var(--ozon-border);
-  border-radius: var(--ozon-radius-md);
-  background: var(--ozon-surface);
-  box-shadow: var(--ozon-shadow-sm);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-md);
+  background: var(--app-surface);
+  box-shadow: var(--app-shadow-sm);
 }
 
 .table {
@@ -166,7 +166,7 @@
 .table td {
   padding: 12px 16px;
   text-align: left;
-  border-bottom: 1px solid var(--ozon-border);
+  border-bottom: 1px solid var(--app-border);
   vertical-align: middle;
 }
 
@@ -175,15 +175,15 @@
 }
 
 .table th {
-  color: var(--ozon-text-secondary);
+  color: var(--app-text-secondary);
   font-weight: 500;
   font-size: 12px;
-  background: var(--ozon-surface-muted);
+  background: var(--app-surface-muted);
   white-space: nowrap;
 }
 
 .table tbody tr:hover {
-  background: var(--ozon-blue-muted);
+  background: var(--app-blue-muted);
 }
 
 .grid {
@@ -195,10 +195,10 @@
 
 .stat {
   padding: 16px 18px;
-  border-radius: var(--ozon-radius-md);
-  background: var(--ozon-surface);
-  border: 1px solid var(--ozon-border);
-  box-shadow: var(--ozon-shadow-sm);
+  border-radius: var(--app-radius-md);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  box-shadow: var(--app-shadow-sm);
 }
 
 .stat strong {
@@ -208,11 +208,11 @@
   margin-bottom: 4px;
   letter-spacing: -0.02em;
   line-height: 1.15;
-  color: var(--ozon-text);
+  color: var(--app-text);
 }
 
 .stat span {
-  color: var(--ozon-text-secondary);
+  color: var(--app-text-secondary);
   font-size: 13px;
   line-height: 1.4;
 }
@@ -227,7 +227,7 @@
   margin-bottom: 6px;
   font-size: 13px;
   font-weight: 500;
-  color: var(--ozon-text);
+  color: var(--app-text);
 }
 
 .field input,
@@ -235,12 +235,12 @@
 .field textarea {
   width: 100%;
   padding: 10px 12px;
-  border-radius: var(--ozon-radius-sm);
-  border: 1px solid var(--ozon-border-strong);
-  background: var(--ozon-surface);
+  border-radius: var(--app-radius-sm);
+  border: 1px solid var(--app-border-strong);
+  background: var(--app-surface);
   font-size: 14px;
   font-family: inherit;
-  color: var(--ozon-text);
+  color: var(--app-text);
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
@@ -248,8 +248,8 @@
 .field select:focus,
 .field textarea:focus {
   outline: none;
-  border-color: var(--ozon-blue);
-  box-shadow: 0 0 0 2px var(--ozon-blue-muted);
+  border-color: var(--app-blue);
+  box-shadow: 0 0 0 2px var(--app-blue-muted);
 }
 
 .filters {
@@ -265,7 +265,7 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: var(--ozon-text-secondary);
+  color: var(--app-text-secondary);
   cursor: pointer;
 }
 
@@ -273,19 +273,19 @@
   width: 100%;
   max-width: 320px;
   padding: 10px 12px;
-  border-radius: var(--ozon-radius-sm);
-  border: 1px solid var(--ozon-border-strong);
-  background: var(--ozon-surface);
+  border-radius: var(--app-radius-sm);
+  border: 1px solid var(--app-border-strong);
+  background: var(--app-surface);
   font-size: 14px;
   font-family: inherit;
-  color: var(--ozon-text);
+  color: var(--app-text);
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .searchInput:focus {
   outline: none;
-  border-color: var(--ozon-blue);
-  box-shadow: 0 0 0 2px var(--ozon-blue-muted);
+  border-color: var(--app-blue);
+  box-shadow: 0 0 0 2px var(--app-blue-muted);
 }
 
 .pagination {
@@ -297,7 +297,7 @@
 
 .pagination span {
   font-size: 13px;
-  color: var(--ozon-text-secondary);
+  color: var(--app-text-secondary);
   min-width: 48px;
   text-align: center;
 }
@@ -321,19 +321,19 @@
 }
 
 .muted {
-  color: var(--ozon-text-secondary);
+  color: var(--app-text-secondary);
   font-size: 13px;
   margin-top: 16px;
 }
 
 .rowHighlight {
-  background: var(--ozon-danger-bg);
+  background: var(--app-danger-bg);
 }
 
 .infoBox {
   margin: 0;
   line-height: 1.6;
-  color: var(--ozon-text-secondary);
+  color: var(--app-text-secondary);
   font-size: 14px;
 }
 
@@ -352,19 +352,19 @@
   margin: 24px 0 16px;
   font-size: 18px;
   font-weight: 600;
-  color: var(--ozon-text);
+  color: var(--app-text);
 }
 
 .textSecondary {
-  color: var(--ozon-text-secondary);
+  color: var(--app-text-secondary);
 }
 
 .textDanger {
-  color: var(--ozon-danger-text);
+  color: var(--app-danger-text);
 }
 
 .textWarning {
-  color: var(--ozon-warning-text);
+  color: var(--app-warning-text);
 }
 
 .mtSm {
@@ -414,23 +414,23 @@
 .warningBox {
   margin-bottom: 12px;
   padding: 12px 14px;
-  border-radius: var(--ozon-radius-sm);
-  background: var(--ozon-warning-bg);
+  border-radius: var(--app-radius-sm);
+  background: var(--app-warning-bg);
   border: 1px solid rgba(255, 152, 0, 0.25);
   font-size: 14px;
-  color: var(--ozon-text);
+  color: var(--app-text);
 }
 
 .cardTitle {
   margin: 0 0 8px;
   font-size: 16px;
   font-weight: 600;
-  color: var(--ozon-text);
+  color: var(--app-text);
 }
 
 .cardText {
   margin: 0 0 12px;
-  color: var(--ozon-text-secondary);
+  color: var(--app-text-secondary);
   font-size: 14px;
 }
 
@@ -446,7 +446,7 @@
 .listSecondary {
   margin: 0 0 12px;
   padding-left: 20px;
-  color: var(--ozon-text-secondary);
+  color: var(--app-text-secondary);
   font-size: 14px;
   line-height: 1.6;
 }
@@ -469,12 +469,12 @@
 }
 
 .fieldError {
-  color: var(--ozon-danger-text);
+  color: var(--app-danger-text);
   font-size: 12px;
 }
 
 .fieldHint {
-  color: var(--ozon-text-muted);
+  color: var(--app-text-muted);
   font-size: 12px;
 }
 
@@ -492,7 +492,7 @@
   font-size: 14px;
   line-height: 1.6;
   margin: 0;
-  color: var(--ozon-text);
+  color: var(--app-text);
 }
 
 .scrollX {

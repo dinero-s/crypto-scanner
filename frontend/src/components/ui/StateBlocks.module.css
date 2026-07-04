@@ -5,14 +5,14 @@
   justify-content: center;
   gap: 14px;
   padding: 64px 24px;
-  color: var(--ozon-text-secondary);
+  color: var(--app-text-secondary);
 }
 
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid var(--ozon-border);
-  border-top-color: var(--ozon-blue);
+  border: 3px solid var(--app-border);
+  border-top-color: var(--app-blue);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -26,16 +26,16 @@
 .empty {
   text-align: center;
   padding: 48px 24px;
-  color: var(--ozon-text-secondary);
-  background: var(--ozon-surface);
-  border: 1px solid var(--ozon-border);
-  border-radius: var(--ozon-radius-md);
-  box-shadow: var(--ozon-shadow-sm);
+  color: var(--app-text-secondary);
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-md);
+  box-shadow: var(--app-shadow-sm);
 }
 
 .empty h3 {
   margin: 0 0 8px;
-  color: var(--ozon-text);
+  color: var(--app-text);
   font-weight: 600;
   font-size: 16px;
 }
@@ -48,10 +48,10 @@
 
 .error {
   padding: 14px 16px;
-  border-radius: var(--ozon-radius-sm);
-  background: var(--ozon-danger-bg);
+  border-radius: var(--app-radius-sm);
+  background: var(--app-danger-bg);
   border: 1px solid rgba(249, 17, 85, 0.2);
-  color: var(--ozon-danger-text);
+  color: var(--app-danger-text);
 }
 
 .error p {
@@ -63,15 +63,15 @@
   display: flex;
   gap: 12px;
   padding: 14px 16px;
-  border-radius: var(--ozon-radius-sm);
-  background: var(--ozon-warning-bg);
+  border-radius: var(--app-radius-sm);
+  background: var(--app-warning-bg);
   border: 1px solid rgba(255, 152, 0, 0.25);
-  color: var(--ozon-text);
+  color: var(--app-text);
   margin-bottom: 16px;
 }
 
 .compliance p {
   margin: 4px 0 0;
   font-size: 13px;
-  color: var(--ozon-text-secondary);
+  color: var(--app-text-secondary);
 }

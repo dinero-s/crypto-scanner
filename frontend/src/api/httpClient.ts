@@ -1,14 +1,13 @@
-import { ApiError, assertNotOzonDirectRequest } from './marketplaceGuard';
+import { ApiError } from './errors';
 import { clearTokens, getAccessToken } from './authStorage';
 
-const API_BASE = '/api/user/ozon';
+const API_BASE = '/api/user';
 
 export async function apiFetch<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
   const url = path.startsWith('http') ? path : `${API_BASE}${path}`;
-  assertNotOzonDirectRequest(url);
 
   const headers: HeadersInit = {
     'Content-Type': 'application/json',

@@ -4,7 +4,8 @@ import { getAdminUserById } from '../../api/admin/adminApi';
 import { AdminStatusBadge } from '../../components/admin/AdminBadge';
 import { Card, PageHeader } from '../../components/ui/Page';
 import { ErrorState, LoadingState } from '../../components/ui/StateBlocks';
-import { formatDate, getHumanError } from '../../utils/ozon';
+import { formatDate, getHumanError } from '../../utils/format';
+import { yesNo } from './adminRu';
 import styles from '../../components/ui/Page.module.css';
 
 export function AdminUserDetailPage() {
@@ -32,41 +33,12 @@ export function AdminUserDetailPage() {
         <p>
           Статус: <AdminStatusBadge status={data.status} />
         </p>
+        <p>Телефон: {data.phone || '—'}</p>
+        <p>Город: {data.city || '—'}</p>
+        <p>Email подтверждён: {yesNo(Boolean(data.isEmailConfirmed))}</p>
         <p>Регистрация: {data.createdAt ? formatDate(data.createdAt) : '—'}</p>
         <p>Последний вход: {data.lastLoginAt ? formatDate(data.lastLoginAt) : '—'}</p>
-      </Card>
-
-      <Card title="Подключения к маркетплейсам">
-        {!data.marketplaceConnections.length ? (
-          <p>Нет подключений</p>
-        ) : (
-          <div className={styles.tableWrap}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Название</th>
-                  <th>Статус</th>
-                  <th>Последняя синхр.</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.marketplaceConnections.map((c) => (
-                  <tr key={c.id}>
-                    <td>
-                      <Link className={styles.link} to={`/admin/connections/${c.id}`}>
-                        {c.name}
-                      </Link>
-                    </td>
-                    <td>
-                      <AdminStatusBadge status={c.status} />
-                    </td>
-                    <td>{c.lastSyncAt ? formatDate(c.lastSyncAt) : '—'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        {data.blockReason && <p>Причина блокировки: {data.blockReason}</p>}
       </Card>
     </div>
   );

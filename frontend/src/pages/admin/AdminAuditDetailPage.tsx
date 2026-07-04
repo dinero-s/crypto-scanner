@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { getAdminAuditLogById } from '../../api/admin/adminApi';
 import { Card, PageHeader } from '../../components/ui/Page';
 import { ErrorState, LoadingState } from '../../components/ui/StateBlocks';
-import { formatDate, getHumanError } from '../../utils/ozon';
+import { formatDate, getHumanError } from '../../utils/format';
 import styles from '../../components/ui/Page.module.css';
 
 export function AdminAuditDetailPage() {
@@ -27,12 +27,14 @@ export function AdminAuditDetailPage() {
       />
       <Card>
         <p>Исполнитель: {data.actorEmail}</p>
-        <p>Роль: {data.actorRole}</p>
+        <p>Тип: {data.entityType}</p>
         <p>
-          Сущность: {data.entityType} {data.entityId ?? ''}
+          Объект: {data.entityId ?? '—'}
         </p>
-        <p>IP: {data.ip ?? '—'}</p>
-        <p>Сообщение: {data.message}</p>
+        <p>Статус: {data.status ?? '—'}</p>
+        <p>Результат: {data.executionResult ?? '—'}</p>
+        <p>Описание: {data.message}</p>
+        {data.reason && <p>Причина: {data.reason}</p>}
       </Card>
     </div>
   );

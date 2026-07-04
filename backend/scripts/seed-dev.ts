@@ -7,9 +7,9 @@ import { resolve } from 'node:path';
 import { hash } from 'bcryptjs';
 import mongoose from 'mongoose';
 
-export const DEV_ADMIN_EMAIL = 'admin@ozon-operator.test';
+export const DEV_ADMIN_EMAIL = 'admin@crypto-scanner.test';
 export const DEV_ADMIN_PASSWORD = 'Admin123';
-export const DEV_USER_EMAIL = 'dev@ozon-operator.test';
+export const DEV_USER_EMAIL = 'dev@crypto-scanner.test';
 export const DEV_USER_PASSWORD = 'Test123';
 
 function loadDatabaseUri(): string {

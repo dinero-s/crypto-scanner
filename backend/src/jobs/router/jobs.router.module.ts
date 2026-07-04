@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ScheduledTasksService } from '../services/task.service';
-import { OzonScheduledTasksService } from '../services/ozon-scheduled-tasks.service';
-import { OzonModule } from 'src/modules/ozon/ozon.module';
+import { ScannerScheduledTasksService } from '../services/scanner-scheduled-tasks.service';
+import { JobsQueueModule } from '../jobs.queue.module';
 
 @Module({
-    providers: [ScheduledTasksService, OzonScheduledTasksService],
-    exports: [],
-    imports: [OzonModule],
+    providers: [ScheduledTasksService, ScannerScheduledTasksService],
+    exports: [ScannerScheduledTasksService],
+    imports: [JobsQueueModule],
     controllers: [],
 })
 export class JobsRouterModule {}

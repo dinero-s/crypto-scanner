@@ -16,7 +16,7 @@ import { AdminStatusBadge } from '../../components/admin/AdminBadge';
 import { useAdminAuth } from '../../context/AdminAuthContext';
 import { Button, PageHeader } from '../../components/ui/Page';
 import { EmptyState, ErrorState, LoadingState } from '../../components/ui/StateBlocks';
-import { formatDate, getHumanError } from '../../utils/ozon';
+import { formatDate, getHumanError } from '../../utils/format';
 import styles from '../../components/ui/Page.module.css';
 
 export function AdminUsersPage() {
@@ -79,7 +79,6 @@ export function AdminUsersPage() {
                   <th>Роль</th>
                   <th>Статус</th>
                   <th>Регистрация</th>
-                  <th>Ozon</th>
                   <th>Действия</th>
                 </tr>
               </thead>
@@ -93,9 +92,6 @@ export function AdminUsersPage() {
                       <AdminStatusBadge status={user.status} />
                     </td>
                     <td>{user.createdAt ? formatDate(user.createdAt) : '—'}</td>
-                    <td>
-                      {user.activeOzonConnectionsCount}/{user.ozonConnectionsCount}
-                    </td>
                     <td>
                       <div className={styles.actionsCell}>
                         <Link className={styles.link} to={`/admin/users/${user.id}`}>

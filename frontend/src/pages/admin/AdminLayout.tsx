@@ -15,9 +15,9 @@ export function AdminLayout() {
         className={`${layoutStyles.sidebar} ${navOpen ? adminStyles.navOpen : adminStyles.navCollapsed}`}
       >
         <div className={layoutStyles.brand}>
-          <span className={layoutStyles.logo}>A</span>
+          <span className={layoutStyles.logo}>C</span>
           <div>
-            <strong>AI Marketplace</strong>
+            <strong>crypto-scanner</strong>
             <small>Панель администратора</small>
           </div>
         </div>

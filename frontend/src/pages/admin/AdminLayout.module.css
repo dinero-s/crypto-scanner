@@ -3,13 +3,13 @@
   width: 100%;
   margin-bottom: 4px;
   padding: 10px 14px;
-  border: 1px solid var(--ozon-border);
-  border-radius: var(--ozon-radius-sm);
-  background: var(--ozon-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-sm);
+  background: var(--app-surface);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  color: var(--ozon-text);
+  color: var(--app-text);
 }
 
 @media (max-width: 900px) {
