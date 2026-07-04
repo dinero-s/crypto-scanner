@@ -1,0 +1,103 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 24px;
+}
+
+.section {
+  background: var(--ma-surface);
+  border: 1px solid var(--ma-border-subtle);
+  border-radius: var(--ma-radius-md);
+  padding: 14px 16px;
+}
+
+.sectionTitle {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ma-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.pairTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.typeLabel {
+  font-size: 12px;
+  color: var(--ma-text-muted);
+  margin: 4px 0 0;
+}
+
+.yieldHero {
+  text-align: right;
+}
+
+.yieldValue {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ma-success);
+}
+
+.yieldHint {
+  font-size: 10px;
+  color: var(--ma-text-muted);
+}
+
+.riskList {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+  color: var(--ma-text-secondary);
+  line-height: 1.6;
+}
+
+.riskList li {
+  margin-bottom: 4px;
+}
+
+.positionInput {
+  margin-top: 8px;
+}
+
+.alertBtn {
+  width: 100%;
+  padding: 14px;
+  background: var(--ma-accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--ma-radius-md);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.alertBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.alertNote {
+  font-size: 11px;
+  color: var(--ma-text-muted);
+  text-align: center;
+  margin: 8px 0 0;
+}
+
+.divider {
+  height: 1px;
+  background: var(--ma-border-subtle);
+  margin: 10px 0;
+}

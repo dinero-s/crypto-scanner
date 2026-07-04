@@ -30,6 +30,21 @@ npm run dev
 
 UI: `http://localhost:5173` (proxy на backend `/api`)
 
+### Telegram Mini App
+
+```bash
+cd frontend
+cp .env.example .env
+npm run dev
+```
+
+Mini App UI: `http://localhost:5173/mini-app`
+
+- Тёмная mobile-first тема
+- Pull-to-refresh, skeleton/empty/error states
+- API через `VITE_API_BASE_URL` (по умолчанию `/api`)
+- Telegram WebApp SDK + отправка `initData` на `/api/telegram-users/auth`
+
 ## Docker (MongoDB + Redis для локальной разработки)
 
 ```bash

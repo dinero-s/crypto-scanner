@@ -1,21 +1,21 @@
 # Telegram Users
 
 ## Назначение
-Пользователи Telegram Mini App: авторизация через initData, профиль, mock-подписка (free).
+Пользователи Telegram Mini App и бота: upsert при /start, mock-подписка.
 
 ## Структура
-- `entities/` — telegram_users
+- `entities/` — `telegram_users`
 - `repositories/` — CRUD
 - `services/` — auth, profile, subscription
 - `controllers/` — REST
 
 ## Основные потоки
-- Mini App → initData → upsert пользователя
-- Subscription пока всегда `free` (mock)
+- Bot /start или Mini App → upsert пользователя
+- `subscriptionStatus`: free (default), premium/trial — вручную в БД
 
 ## Зависимости
 - Config: `TELEGRAM_BOT_TOKEN`
-- `alerts` — chatId для уведомлений
+- `alerts` — chatId и настройки алертов
 
 ## Что читать при изменениях
 - `services/telegram-users.service.ts`

@@ -1,8 +1,8 @@
-import { Controller, Get, Patch, Body, Param } from '@nestjs/common';
+import { Controller, Get, Patch, Body } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
-import { UpdateAlertSettingsDto } from '../dto/alert-settings.dto';
+import { UpdateAlertSettingsDto, AlertSettingsResponseDto } from '../dto/alert-settings.dto';
 import { AlertsService } from '../services/alerts.service';
 
 /** REST: настройки алертов (Mini App / user) */
@@ -15,7 +15,7 @@ export class AlertsController {
     @Get('settings')
     @ApiOperation({ summary: 'Получить настройки алертов' })
     @ApiResponse({ status: 200, description: 'Настройки алертов' })
-    async getSettings(@CurrentUser('id') userId: Types.ObjectId) {
+    async getSettings(@CurrentUser('id') userId: Types.ObjectId): Promise<AlertSettingsResponseDto> {
         return this.alertsService.getSettings(userId);
     }
 
@@ -25,13 +25,7 @@ export class AlertsController {
     async updateSettings(
         @CurrentUser('id') userId: Types.ObjectId,
         @Body() dto: UpdateAlertSettingsDto,
-    ) {
+    ): Promise<AlertSettingsResponseDto> {
         return this.alertsService.updateSettings(userId, dto);
-    }
-
-    @Get('settings/:userId')
-    @ApiOperation({ summary: 'Получить настройки по ID (admin/debug)' })
-    async getSettingsById(@Param('userId') userId: string) {
-        return this.alertsService.getSettings(new Types.ObjectId(userId));
     }
 }

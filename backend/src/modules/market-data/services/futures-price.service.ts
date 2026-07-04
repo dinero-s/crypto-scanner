@@ -1,22 +1,50 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ExchangeEnum } from 'src/modules/exchanges/enums/exchange.enum';
 import { ExchangeRegistryService } from 'src/modules/exchanges/services/exchange-registry.service';
+import { MarketDataRepository } from '../repositories/market-data.repository';
+import { ExchangeHealthService } from './exchange-health.service';
+import { MarketDataCacheService } from './market-data-cache.service';
 
-/** Сбор futures/perpetual цен */
+/** Сбор perpetual-тикеров */
 @Injectable()
 export class FuturesPriceService {
     private readonly logger = new Logger(FuturesPriceService.name);
 
-    constructor(private readonly exchangeRegistry: ExchangeRegistryService) {}
+    constructor(
+        private readonly registry: ExchangeRegistryService,
+        private readonly repository: MarketDataRepository,
+        private readonly cacheService: MarketDataCacheService,
+        private readonly healthService: ExchangeHealthService,
+    ) {}
 
-    /** Собрать futures-цену */
-    async collectFutures(exchange: ExchangeEnum, unifiedSymbol: string): Promise<void> {
-        const connector = this.exchangeRegistry.getConnector(exchange);
-        const tickers = await connector.getPerpTickers();
-        const ticker = tickers.find((item) => item.symbol === unifiedSymbol);
-
-        this.logger.debug(
-            `collectFutures: ${exchange}/${unifiedSymbol} found=${String(Boolean(ticker))}`,
+    /** Собрать perp-тикеры со всех включённых бирж */
+    async collectAll(): Promise<number> {
+        const tickers = await this.healthService.collectPerExchange(
+            (exchange) => this.registry.getConnector(exchange).getPerpTickers(),
+            'collectPerpTickers',
         );
+
+        const saved = await this.repository.insertPerpTickers(tickers);
+        await this.cacheService.setLatestPerp(tickers);
+
+        for (const exchange of this.getUniqueExchanges(tickers)) {
+            const exchangeTickers = tickers.filter((t) => t.exchange === exchange);
+            await this.repository.saveSnapshot(
+                exchange,
+                'perp',
+                { tickers: exchangeTickers },
+                exchangeTickers.length,
+                Date.now(),
+            );
+        }
+
+        this.logger.log(`collectPerpTickers saved=${String(saved)} total=${String(tickers.length)}`);
+        return saved;
+    }
+
+    private getUniqueExchanges(
+        tickers: Array<{ exchange: ExchangeEnum }>,
+    ): ExchangeEnum[] {
+        return [...new Set(tickers.map((t) => t.exchange))];
     }
 }

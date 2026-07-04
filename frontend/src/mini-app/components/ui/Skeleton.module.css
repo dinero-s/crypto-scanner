@@ -1,0 +1,57 @@
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--ma-surface-elevated) 25%,
+    var(--ma-surface-hover) 50%,
+    var(--ma-surface-elevated) 75%
+  );
+  background-size: 200% 100%;
+  animation: ma-shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--ma-radius-sm);
+}
+
+.line {
+  height: 14px;
+  margin-bottom: 8px;
+}
+
+.lineShort {
+  composes: line;
+  width: 60%;
+}
+
+.lineTitle {
+  composes: line;
+  height: 20px;
+  width: 40%;
+  margin-bottom: 16px;
+}
+
+.block {
+  height: 80px;
+  border-radius: var(--ma-radius-md);
+  margin-bottom: 12px;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.cardSkeleton {
+  composes: block;
+  height: 72px;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ma-border-subtle);
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}

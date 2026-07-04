@@ -1,0 +1,120 @@
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 12px;
+  padding: 12px 14px;
+  background: var(--ma-surface);
+  border: 1px solid var(--ma-border-subtle);
+  border-radius: var(--ma-radius-md);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.row:hover {
+  background: var(--ma-surface-hover);
+  border-color: var(--ma-border);
+}
+
+.row:active {
+  transform: scale(0.995);
+}
+
+.primary {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.secondary {
+  font-size: 12px;
+  color: var(--ma-text-secondary);
+  margin: 0;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.right {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.yield {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ma-success);
+  font-variant-numeric: tabular-nums;
+}
+
+.yieldHint {
+  font-size: 10px;
+  color: var(--ma-text-muted);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.count {
+  font-size: 12px;
+  color: var(--ma-text-muted);
+}
+
+.sortSelect {
+  width: auto;
+  min-width: 140px;
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.filters {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 12px;
+  background: var(--ma-surface);
+  border: 1px solid var(--ma-border-subtle);
+  border-radius: var(--ma-radius-md);
+}
+
+.filterRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.filterLabel {
+  display: block;
+  font-size: 11px;
+  color: var(--ma-text-muted);
+  margin-bottom: 4px;
+}
+
+.toggleFilters {
+  width: 100%;
+  padding: 8px;
+  background: var(--ma-surface-elevated);
+  border: 1px solid var(--ma-border);
+  border-radius: var(--ma-radius-sm);
+  color: var(--ma-text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}

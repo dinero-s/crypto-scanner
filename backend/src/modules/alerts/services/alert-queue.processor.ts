@@ -1,13 +1,14 @@
 import { Logger } from '@nestjs/common';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
+import { Types } from 'mongoose';
 import {
     DEFAULT_QUEUE_WORKER_LOCK_MS,
     QUEUE_JOB_NAMES,
     QUEUE_NAMES,
 } from 'src/common/queue/constants/queue.constant';
-import { AlertDispatchJobData } from '../interfaces/alert-dispatch-job.interface';
 import { AlertEvaluateJobData } from 'src/jobs/interfaces/scanner-job.interface';
+import { AlertDispatchJobData } from '../interfaces/alert-dispatch-job.interface';
 import { AlertsService } from './alerts.service';
 import { TelegramNotificationService } from './telegram-notification.service';
 
@@ -36,6 +37,8 @@ export class AlertQueueProcessor extends WorkerHost {
             await this.telegramNotificationService.sendMessage(
                 data.telegramChatId,
                 data.message,
+                new Types.ObjectId(data.deliveryId),
+                true,
             );
             return;
         }

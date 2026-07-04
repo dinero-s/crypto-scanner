@@ -266,6 +266,15 @@ export class AppEnvDto {
     @IsOptional()
     @IsBoolean()
     @Type(() => Boolean)
+    TELEGRAM_USE_POLLING?: boolean;
+
+    @IsOptional()
+    @IsString()
+    TELEGRAM_WEBHOOK_SECRET?: string;
+
+    @IsOptional()
+    @IsBoolean()
+    @Type(() => Boolean)
     SCANNER_JOBS_ENABLED?: boolean;
 
     @IsOptional()

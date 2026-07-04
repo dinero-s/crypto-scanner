@@ -1,7 +1,7 @@
 /** Тип арбитражной возможности */
 export enum ArbitrageTypeEnum {
-    FUNDING_RATE = 'funding_rate',
-    CASH_AND_CARRY = 'cash_and_carry',
+    FUNDING = 'funding',
+    CASH_CARRY = 'cash_carry',
 }
 
 /** Направление позиции для funding arb */

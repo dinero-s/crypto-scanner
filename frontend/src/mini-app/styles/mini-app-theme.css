@@ -1,0 +1,100 @@
+/* Тёмная тема Telegram Mini App */
+:root,
+[data-theme='dark'] {
+  --ma-bg: #0d1117;
+  --ma-surface: #161b22;
+  --ma-surface-elevated: #1c2128;
+  --ma-surface-hover: #21262d;
+  --ma-border: #30363d;
+  --ma-border-subtle: #21262d;
+  --ma-text: #e6edf3;
+  --ma-text-secondary: #8b949e;
+  --ma-text-muted: #6e7681;
+  --ma-accent: #2f81f7;
+  --ma-accent-soft: rgba(47, 129, 247, 0.15);
+  --ma-success: #3fb950;
+  --ma-success-bg: rgba(63, 185, 80, 0.12);
+  --ma-warning: #d29922;
+  --ma-warning-bg: rgba(210, 153, 34, 0.12);
+  --ma-danger: #f85149;
+  --ma-danger-bg: rgba(248, 81, 73, 0.12);
+  --ma-radius-sm: 8px;
+  --ma-radius-md: 12px;
+  --ma-radius-lg: 16px;
+  --ma-nav-height: 64px;
+  --ma-header-height: 52px;
+  --ma-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --ma-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --ma-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+.mini-app-root {
+  min-height: 100dvh;
+  background: var(--ma-bg);
+  color: var(--ma-text);
+  font-family: var(--ma-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+.mini-app-root * {
+  box-sizing: border-box;
+}
+
+.mini-app-root a {
+  color: var(--ma-accent);
+  text-decoration: none;
+}
+
+.mini-app-root button,
+.mini-app-root input,
+.mini-app-root select,
+.mini-app-root textarea {
+  font: inherit;
+  color: inherit;
+}
+
+.mini-app-root input,
+.mini-app-root select,
+.mini-app-root textarea {
+  background: var(--ma-surface-elevated);
+  border: 1px solid var(--ma-border);
+  border-radius: var(--ma-radius-sm);
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.mini-app-root input:focus,
+.mini-app-root select:focus,
+.mini-app-root textarea:focus {
+  outline: 2px solid var(--ma-accent-soft);
+  border-color: var(--ma-accent);
+}
+
+.mini-app-root input::placeholder {
+  color: var(--ma-text-muted);
+}
+
+@keyframes ma-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes ma-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ma-pull-indicator {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}

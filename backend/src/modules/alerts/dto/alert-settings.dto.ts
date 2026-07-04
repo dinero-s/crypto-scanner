@@ -1,52 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+    ArrayMaxSize,
+    IsArray,
+    IsBoolean,
+    IsEnum,
+    IsNumber,
+    IsOptional,
+    IsString,
+    Max,
+    Min,
+} from 'class-validator';
 import { ExchangeEnum } from 'src/modules/exchanges/enums/exchange.enum';
-import { AlertTypeEnum } from '../enums/alert-type.enum';
-
-/** Пороги для алертов */
-export class AlertThresholdDto {
-    @ApiProperty({ description: 'Тип алерта', enum: AlertTypeEnum })
-    @IsEnum(AlertTypeEnum)
-    type: AlertTypeEnum;
-
-    @ApiPropertyOptional({ description: 'Биржа', enum: ExchangeEnum })
-    @IsOptional()
-    @IsEnum(ExchangeEnum)
-    exchange?: ExchangeEnum;
-
-    @ApiPropertyOptional({ description: 'Символ' })
-    @IsOptional()
-    @IsString()
-    symbol?: string;
-
-    @ApiProperty({ description: 'Минимальный net yield (%) для уведомления' })
-    @IsNumber()
-    minNetYieldPct: number;
-
-    @ApiPropertyOptional({ description: 'Минимальный funding rate (доля)' })
-    @IsOptional()
-    @IsNumber()
-    minFundingRate?: number;
-
-    @ApiPropertyOptional({ description: 'Минимальный basis (%)' })
-    @IsOptional()
-    @IsNumber()
-    minBasisPct?: number;
-}
-
-/** Создание настроек алертов */
-export class CreateAlertSettingsDto {
-    @ApiProperty({ description: 'Telegram user ID' })
-    @IsString()
-    telegramUserId: string;
-
-    @ApiProperty({ description: 'Включены ли уведомления' })
-    @IsBoolean()
-    enabled: boolean;
-
-    @ApiProperty({ description: 'Пороги', type: [AlertThresholdDto] })
-    thresholds: AlertThresholdDto[];
-}
 
 /** Обновление настроек алертов */
 export class UpdateAlertSettingsDto {
@@ -55,7 +19,69 @@ export class UpdateAlertSettingsDto {
     @IsBoolean()
     enabled?: boolean;
 
-    @ApiPropertyOptional({ description: 'Пороги', type: [AlertThresholdDto] })
+    @ApiPropertyOptional({ description: 'Мин. funding rate (доля, напр. 0.0003)' })
     @IsOptional()
-    thresholds?: AlertThresholdDto[];
+    @IsNumber()
+    @Min(0)
+    @Max(1)
+    minFundingRate?: number;
+
+    @ApiPropertyOptional({ description: 'Мин. net yield (%)' })
+    @IsOptional()
+    @IsNumber()
+    @Min(0)
+    @Max(100)
+    minNetYield?: number;
+
+    @ApiPropertyOptional({ description: 'Мин. basis (%)' })
+    @IsOptional()
+    @IsNumber()
+    @Min(0)
+    @Max(100)
+    minBasis?: number;
+
+    @ApiPropertyOptional({ description: 'Разрешённые биржи (пусто = все)', enum: ExchangeEnum, isArray: true })
+    @IsOptional()
+    @IsArray()
+    @ArrayMaxSize(20)
+    @IsEnum(ExchangeEnum, { each: true })
+    allowedExchanges?: ExchangeEnum[];
+
+    @ApiPropertyOptional({ description: 'Whitelist символов BASE/QUOTE (пусто = все)' })
+    @IsOptional()
+    @IsArray()
+    @ArrayMaxSize(100)
+    @IsString({ each: true })
+    symbolsWhitelist?: string[];
+
+    @ApiPropertyOptional({ description: 'Cooldown между алертами (сек)' })
+    @IsOptional()
+    @IsNumber()
+    @Min(60)
+    @Max(86400)
+    alertCooldownSec?: number;
+}
+
+/** Ответ с настройками алертов */
+export class AlertSettingsResponseDto {
+    @ApiProperty({ description: 'Включены ли уведомления' })
+    enabled: boolean;
+
+    @ApiProperty({ description: 'Мин. funding rate (доля)' })
+    minFundingRate: number;
+
+    @ApiProperty({ description: 'Мин. net yield (%)' })
+    minNetYield: number;
+
+    @ApiProperty({ description: 'Мин. basis (%)' })
+    minBasis: number;
+
+    @ApiProperty({ description: 'Разрешённые биржи', enum: ExchangeEnum, isArray: true })
+    allowedExchanges: ExchangeEnum[];
+
+    @ApiProperty({ description: 'Whitelist символов' })
+    symbolsWhitelist: string[];
+
+    @ApiProperty({ description: 'Cooldown (сек)' })
+    alertCooldownSec: number;
 }

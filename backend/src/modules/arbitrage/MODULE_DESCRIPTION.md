@@ -1,25 +1,34 @@
 # Arbitrage
 
 ## Назначение
-Расчёт арбитражных возможностей: Funding Rate и Cash & Carry (Spot-Futures basis) с net yield.
+Расчёт арбитражных возможностей: Funding Rate и Cash & Carry с net yield, scoring и публичным API.
 
 ## Структура
-- `services/` — funding arb, cash & carry, net yield calculator
-- `repositories/` — хранение рассчитанных opportunities
-- `entities/` — MongoDB-схема
-- `interfaces/` — типы возможностей
+- `controllers/` — REST `/arbitrage/*`
+- `services/` — расчёт, фильтрация, scoring, API
+- `utils/` — Decimal.js математика
+- `repositories/` — MongoDB `arbitrage_opportunities`
+- `entities/` — схема возможности
+- `dto/` — query/response контракты
 
 ## Основные потоки
-- После сбора market data → пересчёт opportunities
-- Net yield = gross − fees − spread − slippage
-- API отдаёт отфильтрованный список через `mini-app-api`
+- BullMQ job `scanner-arbitrage-calculate` → `FundingArbitrageService.recalculate()` + `CashCarryArbitrageService.recalculate()`
+- Данные из Redis cache (spot/perp/funding) → расчёт → MongoDB
+- API: `GET /arbitrage/funding`, `/cash-carry`, `/top`, `/:id`, `/stats`
+
+## Формулы
+- `basisPercent = (futuresPrice - spotPrice) / spotPrice * 100`
+- `netBasisPercent = basisPercent - feesPercent - slippagePercent`
+- `netFundingPercent = fundingRate% - feesPercent - slippagePercent`
+- `estimatedProfitUsd = positionSizeUsd * netPercent / 100`
 
 ## Зависимости
-- `market-data` — исходные цены и funding
-- `jobs` — периодический пересчёт
-- `alerts` — уведомления при превышении порога
+- `market-data` — MarketDataCacheService
+- `jobs` — ArbitrageCalculateProcessor
+- `mini-app-api` — dashboard через Funding/CashCarry services
 
 ## Что читать при изменениях
+- `utils/arbitrage-math.util.ts`
+- `services/arbitrage-calculation.service.ts`
 - `services/net-yield-calculator.service.ts`
-- `services/funding-arbitrage.service.ts`
-- `services/cash-carry-arbitrage.service.ts`
+- `entities/arbitrage-opportunity.entity.ts`

@@ -40,9 +40,9 @@ export class MiniAppApiService {
     /** Funding opportunities */
     async getFundingOpportunities(query: OpportunitiesQueryDto) {
         return this.fundingArbitrageService.findOpportunities({
-            type: ArbitrageTypeEnum.FUNDING_RATE,
+            type: ArbitrageTypeEnum.FUNDING,
             exchange: query.exchange,
-            minNetYieldPct: query.minNetYieldPct,
+            minNetYield: query.minNetYieldPct,
             limit: query.limit,
         });
     }
@@ -50,9 +50,9 @@ export class MiniAppApiService {
     /** Cash & carry opportunities */
     async getCashCarryOpportunities(query: OpportunitiesQueryDto) {
         return this.cashCarryArbitrageService.findOpportunities({
-            type: ArbitrageTypeEnum.CASH_AND_CARRY,
+            type: ArbitrageTypeEnum.CASH_CARRY,
             exchange: query.exchange,
-            minNetYieldPct: query.minNetYieldPct,
+            minNetYield: query.minNetYieldPct,
             limit: query.limit,
         });
     }

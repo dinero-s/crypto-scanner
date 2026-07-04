@@ -32,6 +32,10 @@ import { AlertsModule } from 'src/modules/alerts/alerts.module';
                 name: QUEUE_NAMES.SCANNER_ARBITRAGE,
                 defaultJobOptions: DEFAULT_QUEUE_JOB_OPTIONS,
             },
+            {
+                name: QUEUE_NAMES.SCANNER_ALERTS,
+                defaultJobOptions: DEFAULT_QUEUE_JOB_OPTIONS,
+            },
         ),
     ],
     providers: [

@@ -5,6 +5,8 @@ import { ConfigService } from '@nestjs/config';
 import { Connection } from 'mongoose';
 import Redis from 'ioredis';
 import { DatabaseConnection } from 'src/common/database/decorators/database.decorator';
+import { ExchangeHealthResponseDto } from 'src/modules/market-data/dto/latest-market-data.dto';
+import { ExchangeHealthService } from 'src/modules/market-data/services/exchange-health.service';
 import { ScannerHealthService } from './services/scanner-health.service';
 
 /** Healthchecks: liveness / readiness (MongoDB + Redis + collectors) */
@@ -16,6 +18,7 @@ export class HealthController {
         @DatabaseConnection() private readonly mongo: Connection,
         private readonly config: ConfigService,
         private readonly scannerHealth: ScannerHealthService,
+        private readonly exchangeHealth: ExchangeHealthService,
     ) {}
 
     /** Liveness: приложение запущено */
@@ -83,5 +86,21 @@ export class HealthController {
     @ApiResponse({ status: 200, description: 'Scanner health details' })
     async scannerHealthCheck() {
         return this.scannerHealth.getCollectorsHealth();
+    }
+
+    /** Статус доступности бирж */
+    @Get('exchanges')
+    @ApiOperation({ summary: 'Статус доступности бирж (Redis / Mongo)' })
+    @ApiResponse({ status: 200, type: [ExchangeHealthResponseDto] })
+    async exchangesHealth(): Promise<ExchangeHealthResponseDto[]> {
+        const statuses = await this.exchangeHealth.getAllStatuses();
+        return statuses.map((s) => ({
+            exchange: s.exchange,
+            healthy: s.healthy,
+            lastCheckedAt: s.lastCheckedAt.toISOString(),
+            lastSuccessAt: s.lastSuccessAt?.toISOString(),
+            lastError: s.lastError,
+            latencyMs: s.latencyMs,
+        }));
     }
 }

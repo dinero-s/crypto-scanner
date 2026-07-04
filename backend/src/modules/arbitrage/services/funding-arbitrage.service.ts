@@ -1,9 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ArbitrageQueryDto } from '../dto/arbitrage-query.dto';
 import { FundingOpportunityDto } from '../dto/arbitrage-opportunity.dto';
-import { ArbitrageRepository } from '../repositories/arbitrage.repository';
 import { ArbitrageTypeEnum } from '../enums/arbitrage-type.enum';
-import { NetYieldCalculatorService } from './net-yield-calculator.service';
+import { ArbitrageRepository } from '../repositories/arbitrage.repository';
+import { ArbitrageCalculationService } from './arbitrage-calculation.service';
+import { ArbitrageFilterService } from './arbitrage-filter.service';
+import { ArbitrageService } from './arbitrage.service';
 
 /** Расчёт Funding Rate арбитража */
 @Injectable()
@@ -11,27 +13,38 @@ export class FundingArbitrageService {
     private readonly logger = new Logger(FundingArbitrageService.name);
 
     constructor(
+        private readonly calculationService: ArbitrageCalculationService,
+        private readonly filterService: ArbitrageFilterService,
         private readonly arbitrageRepository: ArbitrageRepository,
-        private readonly netYieldCalculator: NetYieldCalculatorService,
+        private readonly arbitrageService: ArbitrageService,
     ) {}
 
     /** Пересчитать funding opportunities */
-    async recalculate(): Promise<void> {
-        this.logger.log('recalculate funding opportunities — заглушка');
+    async recalculate(): Promise<number> {
+        const nowMs = Date.now();
+        const config = this.filterService.getFilterConfig();
+        const data = await this.calculationService.loadMarketData();
+        const opportunities = this.calculationService.calculateFundingOpportunities(
+            data,
+            config,
+            nowMs,
+        );
+
+        const saved = await this.arbitrageRepository.replaceByType(
+            ArbitrageTypeEnum.FUNDING,
+            opportunities,
+            nowMs,
+        );
+
+        this.logger.log(`funding opportunities saved=${String(saved)}`);
+        return saved;
     }
 
     /** Получить список funding opportunities */
     async findOpportunities(query: ArbitrageQueryDto): Promise<FundingOpportunityDto[]> {
-        const rows = await this.arbitrageRepository.findByQuery({
+        return this.arbitrageService.findFundingOpportunities({
             ...query,
-            type: ArbitrageTypeEnum.FUNDING_RATE,
+            type: ArbitrageTypeEnum.FUNDING,
         });
-        return rows.map((row) => ({
-            symbol: row.symbol,
-            exchange: row.exchange,
-            direction: row.direction!,
-            fundingRate: row.fundingRate ?? 0,
-            netYieldPct: row.netYieldPct,
-        }));
     }
 }

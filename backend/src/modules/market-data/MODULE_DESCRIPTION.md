@@ -1,24 +1,28 @@
 # Market Data
 
 ## Назначение
-Сбор и хранение публичных рыночных данных: spot, futures, funding rate, open interest.
+Сбор, хранение и кэширование публичных рыночных данных: spot, perp, funding rate, open interest, инструменты.
 
 ## Структура
-- `entities/` — MongoDB-снимки цен и funding
-- `repositories/` — доступ к БД
-- `services/` — коллекторы по типам данных
+- `entities/` — MongoDB: `exchange_instruments`, `spot_tickers`, `perp_tickers`, `funding_rates`, `market_data_snapshots`, `exchange_health_statuses`
+- `repositories/` — доступ к БД (MarketData, ExchangeInstrument, ExchangeHealth)
+- `services/` — коллекторы, Redis-кэш, health, query API
+- `controllers/` — admin API latest market data
 - `dto/` — параметры сбора и запросов
 
 ## Основные потоки
-- BullMQ job → `MarketDataCollectorService.collectAll()`
-- Отдельные сервисы: spot, futures, funding, OI
-- Снимки сохраняются через `MarketDataRepository`
+- BullMQ granular jobs → коллекторы → Mongo + Redis
+- `ExchangeHealthService.collectPerExchange` — partial results, health после каждой попытки
+- Admin: `GET /admin/market-data/latest/{spot|perp|funding}`
+- Public: `GET /health/exchanges`
 
 ## Зависимости
-- `exchanges` — адаптеры бирж
-- `jobs` — периодический сбор
-- Redis — кэш (этап 2)
+- `exchanges` — connectors и normalizers
+- `jobs` — BullMQ + dynamic scheduler
+- Redis — latest-кэш (`scanner:cache:*`)
 
 ## Что читать при изменениях
 - `services/market-data-collector.service.ts`
+- `services/exchange-health.service.ts`
+- `services/market-data-cache.service.ts`
 - `repositories/market-data.repository.ts`

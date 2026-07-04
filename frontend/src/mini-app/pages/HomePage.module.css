@@ -1,0 +1,86 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.sectionTitle {
+  margin: 8px 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ma-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.collectorList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.collectorItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--ma-border-subtle);
+}
+
+.collectorItem:last-child {
+  border-bottom: none;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.healthy {
+  background: var(--ma-success);
+}
+
+.unhealthy {
+  background: var(--ma-danger);
+}
+
+.quickLinks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.quickLink {
+  padding: 12px;
+  background: var(--ma-surface);
+  border: 1px solid var(--ma-border-subtle);
+  border-radius: var(--ma-radius-md);
+  text-align: center;
+  color: var(--ma-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.quickLink:hover {
+  background: var(--ma-surface-hover);
+}
+
+.quickLink span {
+  display: block;
+  font-size: 11px;
+  color: var(--ma-text-muted);
+  font-weight: 400;
+  margin-top: 4px;
+}

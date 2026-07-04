@@ -1,22 +1,47 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ExchangeEnum } from 'src/modules/exchanges/enums/exchange.enum';
 import { ExchangeRegistryService } from 'src/modules/exchanges/services/exchange-registry.service';
+import { MarketDataRepository } from '../repositories/market-data.repository';
+import { ExchangeHealthService } from './exchange-health.service';
 
-/** Сбор open interest (если биржа поддерживает) */
+/** Сбор open interest */
 @Injectable()
 export class OpenInterestService {
     private readonly logger = new Logger(OpenInterestService.name);
 
-    constructor(private readonly exchangeRegistry: ExchangeRegistryService) {}
+    constructor(
+        private readonly registry: ExchangeRegistryService,
+        private readonly repository: MarketDataRepository,
+        private readonly healthService: ExchangeHealthService,
+    ) {}
 
-    /** Собрать open interest */
-    async collectOpenInterest(exchange: ExchangeEnum, unifiedSymbol: string): Promise<void> {
-        const connector = this.exchangeRegistry.getConnector(exchange);
-        const items = await connector.getOpenInterest();
-        const item = items.find((entry) => entry.symbol === unifiedSymbol);
-
-        this.logger.debug(
-            `collectOpenInterest: ${exchange}/${unifiedSymbol} found=${String(Boolean(item))}`,
+    /** Собрать open interest со всех включённых бирж */
+    async collectAll(): Promise<number> {
+        const items = await this.healthService.collectPerExchange(
+            (exchange) => this.registry.getConnector(exchange).getOpenInterest(),
+            'collectOpenInterest',
         );
+
+        let saved = 0;
+        for (const exchange of this.getUniqueExchanges(items)) {
+            const exchangeItems = items.filter((i) => i.exchange === exchange);
+            await this.repository.saveSnapshot(
+                exchange,
+                'open_interest',
+                { items: exchangeItems },
+                exchangeItems.length,
+                Date.now(),
+            );
+            saved += exchangeItems.length;
+        }
+
+        this.logger.log(`collectOpenInterest saved=${String(saved)} total=${String(items.length)}`);
+        return saved;
+    }
+
+    private getUniqueExchanges(
+        items: Array<{ exchange: ExchangeEnum }>,
+    ): ExchangeEnum[] {
+        return [...new Set(items.map((i) => i.exchange))];
     }
 }

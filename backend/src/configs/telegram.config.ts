@@ -6,5 +6,7 @@ export default registerAs(
         botToken: process.env.TELEGRAM_BOT_TOKEN ?? '',
         alertsEnabled: process.env.TELEGRAM_ALERTS_ENABLED !== 'false',
         miniAppUrl: process.env.TELEGRAM_MINI_APP_URL ?? '',
+        usePolling: process.env.TELEGRAM_USE_POLLING === 'true',
+        webhookSecret: process.env.TELEGRAM_WEBHOOK_SECRET ?? '',
     }),
 );

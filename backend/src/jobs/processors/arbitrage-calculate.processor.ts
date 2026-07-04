@@ -6,8 +6,11 @@ import {
     QUEUE_JOB_NAMES,
     QUEUE_NAMES,
 } from 'src/common/queue/constants/queue.constant';
-import { FundingArbitrageService } from 'src/modules/arbitrage/services/funding-arbitrage.service';
+import { ArbitrageRepository } from 'src/modules/arbitrage/repositories/arbitrage.repository';
 import { CashCarryArbitrageService } from 'src/modules/arbitrage/services/cash-carry-arbitrage.service';
+import { FundingArbitrageService } from 'src/modules/arbitrage/services/funding-arbitrage.service';
+import { MarketDataCacheService } from 'src/modules/market-data/services/market-data-cache.service';
+import { AlertQueueProducerService } from 'src/modules/alerts/services/alert-queue.producer.service';
 import { ArbitrageCalculateJobData } from '../interfaces/scanner-job.interface';
 
 /** Worker: пересчёт арбитражных возможностей */
@@ -21,6 +24,9 @@ export class ArbitrageCalculateProcessor extends WorkerHost {
     constructor(
         private readonly fundingArbitrageService: FundingArbitrageService,
         private readonly cashCarryArbitrageService: CashCarryArbitrageService,
+        private readonly arbitrageRepository: ArbitrageRepository,
+        private readonly cacheService: MarketDataCacheService,
+        private readonly alertQueueProducer: AlertQueueProducerService,
     ) {
         super();
     }
@@ -34,5 +40,11 @@ export class ArbitrageCalculateProcessor extends WorkerHost {
 
         await this.fundingArbitrageService.recalculate();
         await this.cashCarryArbitrageService.recalculate();
+
+        const opportunities = await this.arbitrageRepository.findByQuery({ limit: 200 });
+        await this.cacheService.setLatestOpportunities(opportunities);
+
+        const scheduledAt = Date.now();
+        await this.alertQueueProducer.enqueueEvaluate(scheduledAt);
     }
 }

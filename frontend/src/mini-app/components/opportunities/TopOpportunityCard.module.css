@@ -1,0 +1,16 @@
+.card {
+  composes: row from './OpportunityTable.module.css';
+  margin-bottom: 10px;
+}
+
+.rank {
+  font-size: 11px;
+  color: var(--ma-accent);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.typeBadge {
+  font-size: 10px;
+  text-transform: uppercase;
+}

@@ -6,5 +6,7 @@ export interface AlertDispatchJobData {
     telegramChatId: string;
     alertType: AlertTypeEnum;
     message: string;
+    fingerprint: string;
+    deliveryId: string;
     calculatedAt: number;
 }

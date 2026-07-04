@@ -24,6 +24,11 @@ body {
   font-family: var(--app-font);
 }
 
+body:has(.mini-app-root) {
+  background: #0d1117;
+  color: #e6edf3;
+}
+
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 12px;

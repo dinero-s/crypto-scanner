@@ -11,6 +11,7 @@ import { AuthProvider } from './context/AuthContext';
 import { AdminAuthProvider } from './context/AdminAuthContext';
 import { LoginPage } from './pages/LoginPage';
 import { HomePage } from './pages/HomePage';
+import { MiniAppRoutes } from './mini-app/MiniAppRoutes';
 
 const AdminLayout = lazy(() =>
   import('./pages/admin/AdminLayout').then((m) => ({ default: m.AdminLayout })),
@@ -57,6 +58,7 @@ export default function App() {
           <BrowserRouter>
             <DocumentTitle />
             <Routes>
+              <Route path="/mini-app/*" element={<MiniAppRoutes />} />
               <Route path="/login" element={<LoginPage />} />
               <Route
                 path="/admin/login"

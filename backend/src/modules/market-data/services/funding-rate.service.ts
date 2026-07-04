@@ -1,22 +1,50 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ExchangeEnum } from 'src/modules/exchanges/enums/exchange.enum';
 import { ExchangeRegistryService } from 'src/modules/exchanges/services/exchange-registry.service';
+import { MarketDataRepository } from '../repositories/market-data.repository';
+import { ExchangeHealthService } from './exchange-health.service';
+import { MarketDataCacheService } from './market-data-cache.service';
 
-/** Сбор funding rate и predicted funding */
+/** Сбор funding rates */
 @Injectable()
 export class FundingRateService {
     private readonly logger = new Logger(FundingRateService.name);
 
-    constructor(private readonly exchangeRegistry: ExchangeRegistryService) {}
+    constructor(
+        private readonly registry: ExchangeRegistryService,
+        private readonly repository: MarketDataRepository,
+        private readonly cacheService: MarketDataCacheService,
+        private readonly healthService: ExchangeHealthService,
+    ) {}
 
-    /** Собрать funding rate */
-    async collectFundingRate(exchange: ExchangeEnum, unifiedSymbol: string): Promise<void> {
-        const connector = this.exchangeRegistry.getConnector(exchange);
-        const rates = await connector.getFundingRates();
-        const rate = rates.find((item) => item.symbol === unifiedSymbol);
-
-        this.logger.debug(
-            `collectFundingRate: ${exchange}/${unifiedSymbol} found=${String(Boolean(rate))}`,
+    /** Собрать funding rates со всех включённых бирж */
+    async collectAll(): Promise<number> {
+        const rates = await this.healthService.collectPerExchange(
+            (exchange) => this.registry.getConnector(exchange).getFundingRates(),
+            'collectFundingRates',
         );
+
+        const saved = await this.repository.insertFundingRates(rates);
+        await this.cacheService.setLatestFunding(rates);
+
+        for (const exchange of this.getUniqueExchanges(rates)) {
+            const exchangeRates = rates.filter((r) => r.exchange === exchange);
+            await this.repository.saveSnapshot(
+                exchange,
+                'funding',
+                { rates: exchangeRates },
+                exchangeRates.length,
+                Date.now(),
+            );
+        }
+
+        this.logger.log(`collectFundingRates saved=${String(saved)} total=${String(rates.length)}`);
+        return saved;
+    }
+
+    private getUniqueExchanges(
+        rates: Array<{ exchange: ExchangeEnum }>,
+    ): ExchangeEnum[] {
+        return [...new Set(rates.map((r) => r.exchange))];
     }
 }
