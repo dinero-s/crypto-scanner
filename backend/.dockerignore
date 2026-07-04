@@ -1,0 +1,34 @@
+node_modules
+dist
+.git
+.cursor
+
+# Локальные секреты и окружение
+.env
+.env.local
+.env.*.local
+
+# Артефакты и логи
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+coverage
+
+# Локальные данные, не нужны для сборки образа
+uploads
+exports
+
+# Документация и служебные файлы
+docs
+README.md
+BACKUP.md
+WORKFLOW.md
+TZ.md
+log.md
+use-rules.md
+
+# Тесты и временные файлы
+test
+tmp-swagger-ui-init.js
+swagger.json

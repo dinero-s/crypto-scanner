@@ -1,0 +1,83 @@
+services:
+    ai-marketplace:
+        image: ${BACKEND_IMAGE:-nestjs-backend-local}
+        env_file:
+            - ./backend/.env
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+            args:
+                NODE_ENV: production
+        ports:
+            - 4001:4001
+        depends_on:
+            mongo:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+        volumes:
+            - ./backend/.env:/app/.env
+            - ./uploads:/app/uploads
+        environment:
+            - DATABASE_URI=mongodb://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@mongo:27017/${DATABASE_NAME}?authSource=admin
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
+            - REDIS_DB=0
+            - HTTP_PORT=4001
+        restart: always
+        expose:
+            - 4001
+    mongo:
+        image: mongo:latest
+        env_file:
+            - ./backend/.env
+        restart: always
+        ports:
+            - "127.0.0.1:27018:27017"
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=${DATABASE_USERNAME}
+            - MONGO_INITDB_ROOT_PASSWORD=${DATABASE_PASSWORD}
+            - MONGO_INITDB_DATABASE=${DATABASE_NAME}
+        volumes:
+            - mongo-data:/data/db
+            - ./backend/docker/mongo-init.js:/docker-entrypoint-initdb.d/01-create-user.js:ro
+        command: mongod --auth
+        healthcheck:
+            test: ['CMD-SHELL', 'mongosh -u "$$MONGO_INITDB_ROOT_USERNAME" -p "$$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --quiet --eval "db.adminCommand({ ping: 1 }).ok" | grep 1 || exit 1']
+            interval: 10s
+            timeout: 5s
+            retries: 15
+            start_period: 20s
+    redis:
+        image: redis:latest
+        env_file:
+            - ./backend/.env
+        environment:
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
+        ports:
+            - "127.0.0.1:6379:6379"
+        expose:
+            - "6379"
+        command:
+            - sh
+            - -c
+            - >
+                if [ -z "$${REDIS_PASSWORD}" ]; then
+                  echo "REDIS_PASSWORD is required";
+                  exit 1;
+                fi;
+                exec redis-server --requirepass "$${REDIS_PASSWORD}"
+        volumes:
+            - redis-data:/data
+        restart: always
+        healthcheck:
+            test: ['CMD-SHELL', 'redis-cli -a "$$REDIS_PASSWORD" ping | grep PONG || exit 1']
+            interval: 10s
+            timeout: 5s
+            retries: 15
+            start_period: 10s
+
+volumes:
+    mongo-data:
+    redis-data:

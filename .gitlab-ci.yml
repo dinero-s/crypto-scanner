@@ -1,0 +1,24 @@
+# Сборка backend-образа в CI и пуш в GitLab Container Registry.
+# На проде: в .env задать BACKEND_IMAGE и в deploy.sh выполняется pull (см. deploy.sh).
+
+stages:
+    - build
+
+variables:
+    DOCKER_TLS_CERTDIR: '/certs'
+
+build-backend-image:
+    stage: build
+    image: docker:27-cli
+    services:
+        - name: docker:27-dind
+          alias: docker
+    before_script:
+        - docker info
+        - echo "$CI_JOB_TOKEN" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    script:
+        - docker build -f backend/Dockerfile -t "$CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA" -t "$CI_REGISTRY_IMAGE/backend:latest" backend
+        - docker push "$CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA"
+        - docker push "$CI_REGISTRY_IMAGE/backend:latest"
+    rules:
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

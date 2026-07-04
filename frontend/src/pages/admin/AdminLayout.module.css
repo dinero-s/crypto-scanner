@@ -1,0 +1,29 @@
+.menuToggle {
+  display: none;
+  width: 100%;
+  margin-bottom: 4px;
+  padding: 10px 14px;
+  border: 1px solid var(--ozon-border);
+  border-radius: var(--ozon-radius-sm);
+  background: var(--ozon-surface);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--ozon-text);
+}
+
+@media (max-width: 900px) {
+  .menuToggle {
+    display: block;
+  }
+
+  .navCollapsed .nav {
+    display: none;
+  }
+
+  .navOpen .nav {
+    display: flex;
+    flex-direction: column;
+    margin-top: 8px;
+  }
+}

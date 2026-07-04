@@ -1,0 +1,38 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 26, 52, 0.35);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--ozon-surface);
+  border: 1px solid var(--ozon-border);
+  border-radius: var(--ozon-radius-md);
+  padding: 24px;
+  width: min(480px, calc(100vw - 2rem));
+  box-shadow: var(--ozon-shadow-md);
+  font-family: var(--ozon-font);
+}
+
+.modal h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ozon-text);
+}
+
+.modal p {
+  margin: 0 0 16px;
+  color: var(--ozon-text-secondary);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

@@ -1,0 +1,27 @@
+/* Глобальная Ozon-тема — подключается до всех CSS modules */
+:root {
+  --ozon-blue: #005bff;
+  --ozon-blue-hover: #004ed8;
+  --ozon-blue-soft: #e6f0ff;
+  --ozon-blue-muted: rgba(0, 91, 255, 0.1);
+  --ozon-bg: #f2f4f7;
+  --ozon-surface: #ffffff;
+  --ozon-surface-muted: #f8fafc;
+  --ozon-text: #001a34;
+  --ozon-text-secondary: #808d9a;
+  --ozon-text-muted: #96a3ae;
+  --ozon-border: #e5eaf0;
+  --ozon-border-strong: #d3dae6;
+  --ozon-success-text: #0a9e3a;
+  --ozon-success-bg: rgba(16, 196, 76, 0.12);
+  --ozon-warning-text: #e67e00;
+  --ozon-warning-bg: rgba(255, 152, 0, 0.12);
+  --ozon-danger-text: #d6003a;
+  --ozon-danger-bg: rgba(249, 17, 85, 0.1);
+  --ozon-sidebar-width: 240px;
+  --ozon-radius-sm: 8px;
+  --ozon-radius-md: 12px;
+  --ozon-shadow-sm: 0 1px 2px rgba(0, 26, 52, 0.04);
+  --ozon-shadow-md: 0 2px 8px rgba(0, 26, 52, 0.06);
+  --ozon-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
