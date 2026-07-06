@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ArbitrageQueryDto } from '../dto/arbitrage-query.dto';
 import { CashCarryOpportunityDto } from '../dto/arbitrage-opportunity.dto';
 import { ArbitrageTypeEnum } from '../enums/arbitrage-type.enum';
@@ -10,8 +10,6 @@ import { ArbitrageService } from './arbitrage.service';
 /** Расчёт Cash & Carry / Spot-Futures арбитража */
 @Injectable()
 export class CashCarryArbitrageService {
-    private readonly logger = new Logger(CashCarryArbitrageService.name);
-
     constructor(
         private readonly calculationService: ArbitrageCalculationService,
         private readonly filterService: ArbitrageFilterService,
@@ -36,7 +34,6 @@ export class CashCarryArbitrageService {
             nowMs,
         );
 
-        this.logger.log(`cash & carry opportunities saved=${String(saved)}`);
         return saved;
     }
 

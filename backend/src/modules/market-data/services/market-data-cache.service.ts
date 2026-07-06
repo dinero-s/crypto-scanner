@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 import { ExchangeEnum } from 'src/modules/exchanges/enums/exchange.enum';
@@ -14,7 +14,6 @@ const CACHE_PREFIX = 'scanner:cache';
 /** Redis-кэш latest market data */
 @Injectable()
 export class MarketDataCacheService implements OnModuleDestroy {
-    private readonly logger = new Logger(MarketDataCacheService.name);
     private readonly redis: Redis;
 
     constructor(private readonly configService: ConfigService) {
@@ -116,7 +115,6 @@ export class MarketDataCacheService implements OnModuleDestroy {
     private async setJson(key: string, value: unknown): Promise<void> {
         const ttl = this.getTtlSec();
         await this.redis.set(key, JSON.stringify(value), 'EX', ttl);
-        this.logger.debug(`cache set key=${key} ttl=${String(ttl)}`);
     }
 
     private async getJson<T>(key: string): Promise<T | null> {

@@ -1,4 +1,4 @@
-import WebApp from '@twa-dev/sdk';
+// import WebApp from '@twa-dev/sdk';
 import {
   createContext,
   useCallback,
@@ -8,8 +8,11 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { authenticateWithInitData } from '../api/telegramApi';
-import { setTelegramToken } from '../storage/telegramAuthStorage';
+// import { authenticateWithInitData } from '../api/telegramApi';
+// import { setTelegramToken } from '../storage/telegramAuthStorage';
+
+/** Временно отключено: запуск в обычном браузере без Telegram Mini App */
+const TELEGRAM_ENABLED = false;
 
 export interface TelegramUser {
   id: number;
@@ -32,8 +35,20 @@ interface TelegramContextValue {
 
 const TelegramContext = createContext<TelegramContextValue | null>(null);
 
+const BROWSER_DEFAULTS: TelegramContextValue = {
+  isReady: true,
+  initData: '',
+  user: null,
+  colorScheme: 'light',
+  isAuthenticated: false,
+  authError: null,
+  expand: () => undefined,
+  haptic: () => undefined,
+};
+
+/*
 function parseTelegramUser(): TelegramUser | null {
-  const raw = WebApp.initDataUnsafe.user;
+  const raw = WebApp.initDataUnsafe?.user;
   if (!raw) return null;
   return {
     id: raw.id,
@@ -43,13 +58,20 @@ function parseTelegramUser(): TelegramUser | null {
     languageCode: raw.language_code,
   };
 }
+*/
 
 export function TelegramProvider({ children }: { children: ReactNode }) {
-  const [isReady, setIsReady] = useState(false);
+  const [isReady, setIsReady] = useState(!TELEGRAM_ENABLED);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!TELEGRAM_ENABLED) {
+      setIsReady(true);
+      return;
+    }
+
+    /*
     if (WebApp.platform === 'unknown') {
       setIsReady(true);
       return;
@@ -80,31 +102,44 @@ export function TelegramProvider({ children }: { children: ReactNode }) {
         const message = error instanceof Error ? error.message : 'Ошибка авторизации';
         setAuthError(message);
       });
+    */
   }, []);
 
   const expand = useCallback(() => {
-    WebApp.expand();
+    // WebApp.expand();
   }, []);
 
-  const haptic = useCallback((type: 'light' | 'medium' | 'heavy' = 'light') => {
+  const haptic = useCallback((_type: 'light' | 'medium' | 'heavy' = 'light') => {
+    /*
     if (WebApp.HapticFeedback) {
       WebApp.HapticFeedback.impactOccurred(type);
     }
+    */
   }, []);
 
-  const value = useMemo<TelegramContextValue>(
-    () => ({
+  const value = useMemo<TelegramContextValue>(() => {
+    if (!TELEGRAM_ENABLED) {
+      return {
+        ...BROWSER_DEFAULTS,
+        isReady,
+        isAuthenticated,
+        authError,
+        expand,
+        haptic,
+      };
+    }
+
+    return {
       isReady,
-      initData: WebApp.initData,
-      user: parseTelegramUser(),
-      colorScheme: WebApp.colorScheme,
+      initData: '',
+      user: null,
+      colorScheme: 'light',
       isAuthenticated,
       authError,
       expand,
       haptic,
-    }),
-    [isReady, isAuthenticated, authError, expand, haptic],
-  );
+    };
+  }, [isReady, isAuthenticated, authError, expand, haptic]);
 
   return <TelegramContext.Provider value={value}>{children}</TelegramContext.Provider>;
 }

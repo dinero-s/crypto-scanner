@@ -58,6 +58,7 @@ export default function App() {
             <DocumentTitle />
             <Routes>
               <Route path="/mini-app/*" element={<MiniAppRoutes />} />
+              <Route path="/" element={<Navigate to="/mini-app" replace />} />
               <Route path="/login" element={<LoginPage />} />
               <Route
                 path="/admin/login"
@@ -70,7 +71,7 @@ export default function App() {
 
               <Route element={<ProtectedRoute />}>
                 <Route element={<AppLayout />}>
-                  <Route path="/" element={<Navigate to="/mini-app" replace />} />
+                  <Route path="/dashboard" element={<Navigate to="/mini-app" replace />} />
                 </Route>
               </Route>
 

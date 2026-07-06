@@ -25,8 +25,6 @@ export class MarketDataCollectProcessor extends WorkerHost {
     }
 
     async process(job: Job<ScannerMarketDataJobData, void, string>): Promise<void> {
-        this.logger.log(`jobId=${String(job.id)} name=${job.name}`);
-
         switch (job.name) {
             case QUEUE_JOB_NAMES.SCANNER_COLLECT_INSTRUMENTS:
                 await this.marketDataCollector.collectInstruments();

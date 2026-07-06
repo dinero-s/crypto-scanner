@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ArbitrageQueryDto, ArbitrageTopQueryDto } from '../dto/arbitrage-query.dto';
 import {
     ArbitrageOpportunityDetailDto,
@@ -16,8 +16,6 @@ import { ArbitrageRepository } from '../repositories/arbitrage.repository';
 /** Основной сервис API арбитража */
 @Injectable()
 export class ArbitrageService {
-    private readonly logger = new Logger(ArbitrageService.name);
-
     constructor(private readonly arbitrageRepository: ArbitrageRepository) {}
 
     /** Funding opportunities */
@@ -60,11 +58,7 @@ export class ArbitrageService {
 
     /** Статистика */
     async getStats(): Promise<ArbitrageStatsDto> {
-        const stats = await this.arbitrageRepository.getStats();
-        this.logger.debug(
-            `stats funding=${String(stats.fundingCount)} cashCarry=${String(stats.cashCarryCount)}`,
-        );
-        return stats;
+        return this.arbitrageRepository.getStats();
     }
 
     private toFundingDto(row: ArbitrageOpportunityDoc): FundingOpportunityDto {

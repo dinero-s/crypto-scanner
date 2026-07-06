@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ExchangeEnum } from 'src/modules/exchanges/enums/exchange.enum';
 import { ExchangeRegistryService } from 'src/modules/exchanges/services/exchange-registry.service';
 import { MarketDataRepository } from '../repositories/market-data.repository';
@@ -8,8 +8,6 @@ import { MarketDataCacheService } from './market-data-cache.service';
 /** Сбор funding rates */
 @Injectable()
 export class FundingRateService {
-    private readonly logger = new Logger(FundingRateService.name);
-
     constructor(
         private readonly registry: ExchangeRegistryService,
         private readonly repository: MarketDataRepository,
@@ -38,7 +36,6 @@ export class FundingRateService {
             );
         }
 
-        this.logger.log(`collectFundingRates saved=${String(saved)} total=${String(rates.length)}`);
         return saved;
     }
 

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { ConfigService } from '@nestjs/config';
 import { ScannerQueueProducerService } from './scanner-queue.producer.service';
@@ -6,8 +6,6 @@ import { ScannerQueueProducerService } from './scanner-queue.producer.service';
 /** Cron: проверка алертов (не зависит от market data интервалов) */
 @Injectable()
 export class ScannerScheduledTasksService {
-    private readonly logger = new Logger(ScannerScheduledTasksService.name);
-
     constructor(
         private readonly scannerQueueProducer: ScannerQueueProducerService,
         private readonly configService: ConfigService,
@@ -21,7 +19,6 @@ export class ScannerScheduledTasksService {
             return;
         }
 
-        this.logger.log('scheduleAlertEvaluate');
         await this.scannerQueueProducer.enqueueAlertEvaluate();
     }
 }

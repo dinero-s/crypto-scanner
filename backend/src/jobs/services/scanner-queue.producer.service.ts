@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import {
@@ -23,8 +23,6 @@ import {
 /** Producer: постановка scanner jobs в очереди */
 @Injectable()
 export class ScannerQueueProducerService {
-    private readonly logger = new Logger(ScannerQueueProducerService.name);
-
     constructor(
         @InjectQueue(QUEUE_NAMES.SCANNER_MARKET_DATA)
         private readonly marketDataQueue: Queue<ScannerMarketDataJobData>,
@@ -96,8 +94,6 @@ export class ScannerQueueProducerService {
             payload,
             { ...DEFAULT_QUEUE_JOB_OPTIONS, jobId },
         );
-
-        this.logger.log(`jobId=${jobId} поставлен в очередь`);
     }
 
     /** Поставить job пересчёта арбитража */
@@ -110,8 +106,6 @@ export class ScannerQueueProducerService {
             { scheduledAt },
             { ...DEFAULT_QUEUE_JOB_OPTIONS, jobId },
         );
-
-        this.logger.log(`jobId=${jobId} поставлен в очередь`);
     }
 
     /** Поставить job проверки алертов */
@@ -124,8 +118,6 @@ export class ScannerQueueProducerService {
             { scheduledAt },
             { ...DEFAULT_QUEUE_JOB_OPTIONS, jobId },
         );
-
-        this.logger.log(`jobId=${jobId} поставлен в очередь`);
     }
 
     private async enqueueMarketDataJob<T extends { scheduledAt: number }>(
@@ -140,7 +132,5 @@ export class ScannerQueueProducerService {
             { scheduledAt } as T,
             { ...DEFAULT_QUEUE_JOB_OPTIONS, jobId },
         );
-
-        this.logger.log(`jobId=${jobId} поставлен в очередь`);
     }
 }

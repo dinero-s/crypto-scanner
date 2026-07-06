@@ -30,8 +30,6 @@ export class AlertQueueProcessor extends WorkerHost {
     async process(
         job: Job<AlertDispatchJobData | AlertEvaluateJobData, void, string>,
     ): Promise<void> {
-        this.logger.log(`jobId=${String(job.id)} name=${job.name}`);
-
         if (job.name === QUEUE_JOB_NAMES.SCANNER_ALERT_DISPATCH) {
             const data = job.data as AlertDispatchJobData;
             await this.telegramNotificationService.sendMessage(

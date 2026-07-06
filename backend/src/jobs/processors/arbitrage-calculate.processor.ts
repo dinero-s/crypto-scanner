@@ -1,4 +1,3 @@
-import { Logger } from '@nestjs/common';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import {
@@ -19,8 +18,6 @@ import { ArbitrageCalculateJobData } from '../interfaces/scanner-job.interface';
     lockDuration: DEFAULT_QUEUE_WORKER_LOCK_MS,
 })
 export class ArbitrageCalculateProcessor extends WorkerHost {
-    private readonly logger = new Logger(ArbitrageCalculateProcessor.name);
-
     constructor(
         private readonly fundingArbitrageService: FundingArbitrageService,
         private readonly cashCarryArbitrageService: CashCarryArbitrageService,
@@ -32,8 +29,6 @@ export class ArbitrageCalculateProcessor extends WorkerHost {
     }
 
     async process(job: Job<ArbitrageCalculateJobData, void, string>): Promise<void> {
-        this.logger.log(`jobId=${String(job.id)} name=${job.name}`);
-
         if (job.name !== QUEUE_JOB_NAMES.SCANNER_ARBITRAGE_CALCULATE) {
             return;
         }

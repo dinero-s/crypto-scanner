@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { FundingArbitrageService } from 'src/modules/arbitrage/services/funding-arbitrage.service';
 import { CashCarryArbitrageService } from 'src/modules/arbitrage/services/cash-carry-arbitrage.service';
 import { ArbitrageTypeEnum } from 'src/modules/arbitrage/enums/arbitrage-type.enum';
@@ -11,8 +11,6 @@ import { OpportunitiesQueryDto, ScannerDashboardDto } from '../dto/mini-app.dto'
 /** Фасад REST API для Mini App */
 @Injectable()
 export class MiniAppApiService {
-    private readonly logger = new Logger(MiniAppApiService.name);
-
     constructor(
         private readonly fundingArbitrageService: FundingArbitrageService,
         private readonly cashCarryArbitrageService: CashCarryArbitrageService,
@@ -87,7 +85,6 @@ export class MiniAppApiService {
     /** Scanner health for Mini App */
     async getScannerHealth() {
         const status = await this.marketDataCollector.getCollectorStatus();
-        this.logger.debug('getScannerHealth');
         return {
             collectors: status,
             timestamp: Date.now(),

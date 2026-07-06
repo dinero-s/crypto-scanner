@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ExchangeEnum } from 'src/modules/exchanges/enums/exchange.enum';
 import { ExchangeRegistryService } from 'src/modules/exchanges/services/exchange-registry.service';
 import { MarketDataRepository } from '../repositories/market-data.repository';
@@ -7,8 +7,6 @@ import { ExchangeHealthService } from './exchange-health.service';
 /** Сбор open interest */
 @Injectable()
 export class OpenInterestService {
-    private readonly logger = new Logger(OpenInterestService.name);
-
     constructor(
         private readonly registry: ExchangeRegistryService,
         private readonly repository: MarketDataRepository,
@@ -35,7 +33,6 @@ export class OpenInterestService {
             saved += exchangeItems.length;
         }
 
-        this.logger.log(`collectOpenInterest saved=${String(saved)} total=${String(items.length)}`);
         return saved;
     }
 

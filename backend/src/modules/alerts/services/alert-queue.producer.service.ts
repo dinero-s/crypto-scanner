@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import {
@@ -12,8 +12,6 @@ import { AlertDispatchJobData } from '../interfaces/alert-dispatch-job.interface
 /** Producer: постановка алертов в очередь */
 @Injectable()
 export class AlertQueueProducerService {
-    private readonly logger = new Logger(AlertQueueProducerService.name);
-
     constructor(
         @InjectQueue(QUEUE_NAMES.SCANNER_ALERTS)
         private readonly alertsQueue: Queue<AlertDispatchJobData | AlertEvaluateJobData>,
@@ -27,8 +25,6 @@ export class AlertQueueProducerService {
             ...DEFAULT_QUEUE_JOB_OPTIONS,
             jobId,
         });
-
-        this.logger.log(`jobId=${jobId} поставлен в очередь`);
     }
 
     /** Поставить job проверки порогов */
@@ -43,7 +39,5 @@ export class AlertQueueProducerService {
                 jobId,
             },
         );
-
-        this.logger.log(`jobId=${jobId} поставлен в очередь`);
     }
 }

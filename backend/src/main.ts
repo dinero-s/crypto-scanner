@@ -54,6 +54,9 @@ async function bootstrap() {
         cors: false, // CORS обрабатывается через CorsMiddleware
         rawBody: true,
         bodyParser: false, // Disable built-in body parser to use custom ones
+        logger: classEnv.APP_DEBUG
+            ? ['error', 'warn', 'log', 'debug']
+            : ['error', 'warn', 'log'],
     });
 
     const uploadsRoot = join(process.cwd(), 'uploads');

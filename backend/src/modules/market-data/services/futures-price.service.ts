@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ExchangeEnum } from 'src/modules/exchanges/enums/exchange.enum';
 import { ExchangeRegistryService } from 'src/modules/exchanges/services/exchange-registry.service';
 import { MarketDataRepository } from '../repositories/market-data.repository';
@@ -8,8 +8,6 @@ import { MarketDataCacheService } from './market-data-cache.service';
 /** Сбор perpetual-тикеров */
 @Injectable()
 export class FuturesPriceService {
-    private readonly logger = new Logger(FuturesPriceService.name);
-
     constructor(
         private readonly registry: ExchangeRegistryService,
         private readonly repository: MarketDataRepository,
@@ -38,7 +36,6 @@ export class FuturesPriceService {
             );
         }
 
-        this.logger.log(`collectPerpTickers saved=${String(saved)} total=${String(tickers.length)}`);
         return saved;
     }
 

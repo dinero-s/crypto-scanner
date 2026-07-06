@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ArbitrageQueryDto } from '../dto/arbitrage-query.dto';
 import { FundingOpportunityDto } from '../dto/arbitrage-opportunity.dto';
 import { ArbitrageTypeEnum } from '../enums/arbitrage-type.enum';
@@ -10,8 +10,6 @@ import { ArbitrageService } from './arbitrage.service';
 /** Расчёт Funding Rate арбитража */
 @Injectable()
 export class FundingArbitrageService {
-    private readonly logger = new Logger(FundingArbitrageService.name);
-
     constructor(
         private readonly calculationService: ArbitrageCalculationService,
         private readonly filterService: ArbitrageFilterService,
@@ -36,7 +34,6 @@ export class FundingArbitrageService {
             nowMs,
         );
 
-        this.logger.log(`funding opportunities saved=${String(saved)}`);
         return saved;
     }
 

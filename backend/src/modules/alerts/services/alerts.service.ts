@@ -73,7 +73,6 @@ export class AlertsService {
 
         const opportunities = await this.arbitrageRepository.findByQuery({ limit: 200 });
         if (opportunities.length === 0) {
-            this.logger.debug('evaluateAndDispatch: opportunities пуст');
             return;
         }
 
@@ -111,7 +110,9 @@ export class AlertsService {
             }
         }
 
-        this.logger.log(`evaluateAndDispatch dispatched=${String(dispatched)}`);
+        if (dispatched > 0) {
+            this.logger.log(`evaluateAndDispatch dispatched=${String(dispatched)}`);
+        }
     }
 
     private async tryDispatchAlert(
