@@ -3,6 +3,7 @@ import type { CashCarryOpportunity, FundingOpportunity } from '../../api/types';
 import { formatExchange, formatMinutes, formatPair, formatPercent, formatRate } from '../../utils/format';
 import { Badge } from '../ui/Badge';
 import { RiskBadge } from '../ui/RiskBadge';
+import { VerdictBadge } from '../ui/VerdictBadge';
 import styles from './OpportunityTable.module.css';
 
 interface FundingTableProps {
@@ -37,12 +38,13 @@ export function FundingTable({ items }: FundingTableProps) {
               {item.timeToFundingMinutes !== undefined && (
                 <Badge>{formatMinutes(item.timeToFundingMinutes)}</Badge>
               )}
+              <VerdictBadge verdict={item.tradeVerdict} />
               <RiskBadge score={item.riskScore} />
             </div>
           </div>
           <div className={styles.right}>
-            <span className={styles.yield}>{formatPercent(item.netFundingPercent)}</span>
-            <span className={styles.yieldHint}>net after est. fees</span>
+            <span className={styles.yield}>{formatPercent(item.totalNetAfterEntryPercent)}</span>
+            <span className={styles.yieldHint}>итого за интервал</span>
           </div>
         </div>
       ))}
@@ -80,12 +82,13 @@ export function CashCarryTable({ items }: CashCarryTableProps) {
             <div className={styles.meta}>
               <Badge variant="accent">basis {formatPercent(item.basisPercent)}</Badge>
               <Badge>score {String(item.opportunityScore)}</Badge>
+              <VerdictBadge verdict={item.tradeVerdict} />
               <RiskBadge score={item.riskScore} />
             </div>
           </div>
           <div className={styles.right}>
-            <span className={styles.yield}>{formatPercent(item.netBasisPercent)}</span>
-            <span className={styles.yieldHint}>net after est. fees</span>
+            <span className={styles.yield}>{formatPercent(item.totalNetAfterEntryPercent)}</span>
+            <span className={styles.yieldHint}>итого за интервал</span>
           </div>
         </div>
       ))}

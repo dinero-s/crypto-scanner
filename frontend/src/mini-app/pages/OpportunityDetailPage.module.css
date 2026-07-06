@@ -47,7 +47,15 @@
 .yieldValue {
   font-size: 22px;
   font-weight: 700;
+  color: var(--ma-text-primary);
+}
+
+.yieldPositive {
   color: var(--ma-success);
+}
+
+.yieldNegative {
+  color: var(--ma-danger, #ff5c5c);
 }
 
 .yieldHint {

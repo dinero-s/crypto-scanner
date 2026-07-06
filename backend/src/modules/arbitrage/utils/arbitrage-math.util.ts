@@ -1,4 +1,8 @@
 import Decimal from 'decimal.js';
+import {
+    FundingDirectionEnum,
+    TradeVerdictEnum,
+} from '../enums/arbitrage-type.enum';
 
 Decimal.set({ precision: 20, rounding: Decimal.ROUND_HALF_UP });
 
@@ -159,6 +163,47 @@ export function isValidPrice(value: number | null | undefined): boolean {
 export function isPositiveNetYield(netPercent: number): boolean {
     const net = toDecimal(netPercent);
     return net !== null && net.gt(0);
+}
+
+/** P&L спреда при входе в хедж (+ = выгода, − = потери) */
+export function calculateEntrySpreadImpactPercent(
+    direction: FundingDirectionEnum,
+    spreadPercent: number,
+): number {
+    const spread = toDecimal(spreadPercent) ?? new Decimal(0);
+    if (direction === FundingDirectionEnum.LONG_SPOT_SHORT_PERP) {
+        return toNumber(spread);
+    }
+    return toNumber(spread.neg());
+}
+
+/** Итог за интервал: net funding + спред при входе */
+export function calculateTotalNetAfterEntryPercent(
+    netFundingPercent: number,
+    entrySpreadImpactPercent: number,
+): number {
+    const netFunding = toDecimal(netFundingPercent) ?? new Decimal(0);
+    const entryImpact = toDecimal(entrySpreadImpactPercent) ?? new Decimal(0);
+    return toNumber(netFunding.plus(entryImpact));
+}
+
+/** Вердикт по итоговому net (%) */
+export function resolveTradeVerdict(
+    totalNetPercent: number,
+    marginalThreshold = 0.05,
+): TradeVerdictEnum {
+    const net = toDecimal(totalNetPercent);
+    if (!net) {
+        return TradeVerdictEnum.MARGINAL;
+    }
+    const threshold = toDecimal(marginalThreshold) ?? new Decimal(0.05);
+    if (net.gt(threshold)) {
+        return TradeVerdictEnum.PROFITABLE;
+    }
+    if (net.lt(threshold.neg())) {
+        return TradeVerdictEnum.UNPROFITABLE;
+    }
+    return TradeVerdictEnum.MARGINAL;
 }
 
 /** Ключ для сопоставления инструментов */

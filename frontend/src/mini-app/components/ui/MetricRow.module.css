@@ -27,6 +27,10 @@
   color: var(--ma-success);
 }
 
+.negative {
+  color: var(--ma-danger, #ff5c5c);
+}
+
 .muted {
   color: var(--ma-text-muted);
   font-size: 11px;

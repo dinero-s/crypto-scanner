@@ -1,0 +1,24 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.profitable {
+  background: color-mix(in srgb, var(--ma-success) 18%, transparent);
+  color: var(--ma-success);
+}
+
+.marginal {
+  background: color-mix(in srgb, var(--ma-warning, #f5a623) 18%, transparent);
+  color: var(--ma-warning, #f5a623);
+}
+
+.unprofitable {
+  background: color-mix(in srgb, var(--ma-danger, #ff5c5c) 18%, transparent);
+  color: var(--ma-danger, #ff5c5c);
+}

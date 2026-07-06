@@ -238,4 +238,53 @@ describe('ArbitrageCalculationService', () => {
         const results = service.calculateFundingOpportunities(data, baseConfig, nowMs);
         expect(results).toHaveLength(0);
     });
+
+    it('исключает funding opportunity если спред при входе съедает net funding', () => {
+        const data = {
+            spot: [
+                {
+                    exchange: ExchangeEnum.BINANCE,
+                    symbol: 'ESIM/USDT',
+                    baseAsset: 'ESIM',
+                    quoteAsset: 'USDT',
+                    bid: 0.0397,
+                    ask: 0.03979,
+                    last: 0.03979,
+                    volume24h: 500_000,
+                    timestamp: nowMs,
+                },
+            ],
+            perp: [
+                {
+                    exchange: ExchangeEnum.BINANCE,
+                    symbol: 'ESIM/USDT',
+                    baseAsset: 'ESIM',
+                    quoteAsset: 'USDT',
+                    bid: 0.039001,
+                    ask: 0.03901,
+                    last: 0.039001,
+                    markPrice: 0.039001,
+                    indexPrice: 0.03979,
+                    volume24h: 500_000,
+                    openInterest: 1000,
+                    timestamp: nowMs,
+                },
+            ],
+            funding: [
+                {
+                    exchange: ExchangeEnum.BINANCE,
+                    symbol: 'ESIM/USDT',
+                    baseAsset: 'ESIM',
+                    quoteAsset: 'USDT',
+                    fundingRate: 0.02,
+                    nextFundingTime: nowMs + 3_600_000,
+                    fundingIntervalHours: 8,
+                    timestamp: nowMs,
+                },
+            ],
+        };
+
+        const results = service.calculateFundingOpportunities(data, baseConfig, nowMs);
+        expect(results).toHaveLength(0);
+    });
 });

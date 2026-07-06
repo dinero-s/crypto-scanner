@@ -8,6 +8,7 @@ import { ExchangeEnum } from 'src/modules/exchanges/enums/exchange.enum';
 import {
     ArbitrageTypeEnum,
     FundingDirectionEnum,
+    TradeVerdictEnum,
 } from '../enums/arbitrage-type.enum';
 
 export const TableName = 'arbitrage_opportunities';
@@ -22,6 +23,10 @@ export interface ArbitrageOpportunityMetadata {
     isTheoreticalApr?: boolean;
     volume24h?: number;
     grossYieldPercent?: number;
+    netFundingPercent?: number;
+    entrySpreadImpactPercent?: number;
+    totalNetAfterEntryPercent?: number;
+    tradeVerdict?: TradeVerdictEnum;
 }
 
 /** Рассчитанная арбитражная возможность */
@@ -93,6 +98,10 @@ export class ArbitrageOpportunityEntity {
 
 export const ArbitrageOpportunitySchema = DatabaseSchema(ArbitrageOpportunityEntity);
 
+ArbitrageOpportunitySchema.index(
+    { type: 1, spotExchange: 1, spotSymbol: 1 },
+    { unique: true, name: 'type_exchange_symbol_unique' },
+);
 ArbitrageOpportunitySchema.index(
     { type: 1, spotExchange: 1, spotSymbol: 1, calculatedAt: -1 },
     { name: 'type_exchange_symbol_calc' },

@@ -5,6 +5,7 @@ import { fetchOpportunityById } from '../api/arbitrageApi';
 import { Badge } from '../components/ui/Badge';
 import { MetricRow } from '../components/ui/MetricRow';
 import { RiskBadge } from '../components/ui/RiskBadge';
+import { VerdictBadge } from '../components/ui/VerdictBadge';
 import { SkeletonPage } from '../components/ui/Skeleton';
 import { ErrorState, RiskDisclaimer } from '../components/ui/StateBlocks';
 import { useTelegram } from '../context/TelegramProvider';
@@ -19,6 +20,7 @@ import {
   formatUsd,
 } from '../utils/format';
 import { getRiskFactors } from '../utils/risk';
+import { readTotalNetPercent, readTradeVerdict } from '../utils/tradeVerdict';
 import { getHumanError } from '../../utils/format';
 import styles from './OpportunityDetailPage.module.css';
 
@@ -60,9 +62,19 @@ export function OpportunityDetailPage() {
   const feesPercent = readMetaNumber(item.metadata, 'estimatedFeesPercent') ?? 0;
   const slippagePercent = readMetaNumber(item.metadata, 'estimatedSlippagePercent') ?? 0;
   const spreadPercent = readMetaNumber(item.metadata, 'spotPerpSpreadPercent');
+  const netFundingPercent = readMetaNumber(item.metadata, 'netFundingPercent');
+  const entrySpreadImpact = readMetaNumber(item.metadata, 'entrySpreadImpactPercent');
+  const grossYieldPercent = readMetaNumber(item.metadata, 'grossYieldPercent');
+  const totalNetPercent = readTotalNetPercent(
+    item.totalNetAfterEntryPercent ?? item.netYieldPercent ?? 0,
+    item.metadata,
+  );
+  const tradeVerdict = readTradeVerdict(totalNetPercent, item.metadata);
   const positionUsd = Number(positionSize) || 0;
-  const estimatedProfit = estimateProfitUsd(positionUsd, item.netYieldPercent);
+  const totalProfitUsd = estimateProfitUsd(positionUsd, totalNetPercent);
   const riskFactors = getRiskFactors(item.riskScore);
+  const isProfitable = totalNetPercent > 0.05;
+  const isUnprofitable = totalNetPercent < -0.05;
 
   const handleCreateAlert = () => {
     haptic('medium');
@@ -80,14 +92,26 @@ export function OpportunityDetailPage() {
             <p className={styles.typeLabel}>
               {isFunding ? 'Funding Rate' : 'Cash & Carry'} · score {String(item.opportunityScore)}
             </p>
-            <div style={{ marginTop: 8 }}>
+            <div style={{ marginTop: 8, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <VerdictBadge verdict={tradeVerdict} />
               <RiskBadge score={item.riskScore} />
             </div>
           </div>
           <div className={styles.yieldHero}>
-            <div className={styles.yieldValue}>{formatPercent(item.netYieldPercent)}</div>
-            <div className={styles.yieldHint}>estimated net yield</div>
-            {item.annualizedApr !== undefined && (
+            <div
+              className={[
+                styles.yieldValue,
+                isProfitable ? styles.yieldPositive : '',
+                isUnprofitable ? styles.yieldNegative : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+            >
+              {formatPercent(totalNetPercent)}
+            </div>
+            <div className={styles.yieldHint}>итого за 1 интервал</div>
+            <div className={styles.yieldHint}>{formatUsd(totalProfitUsd)} на ${String(positionUsd || 10000)}</div>
+            {item.annualizedApr != null && (
               <div className={styles.yieldHint}>
                 {item.metadata?.isTheoreticalApr ? 'theoretical APR' : 'annualized APR'}{' '}
                 {formatPercent(item.annualizedApr)}
@@ -95,6 +119,41 @@ export function OpportunityDetailPage() {
             )}
           </div>
         </div>
+      </div>
+
+      <div className={styles.section}>
+        <h3 className={styles.sectionTitle}>Итоговый расчёт</h3>
+        {isFunding && grossYieldPercent !== undefined && (
+          <MetricRow label="Funding (gross)" value={formatPercent(grossYieldPercent)} />
+        )}
+        {!isFunding && item.basisPercent !== undefined && (
+          <MetricRow label="Basis (gross)" value={formatPercent(item.basisPercent)} />
+        )}
+        <MetricRow label="Комиссии" value={`−${formatPercent(feesPercent)}`} negative />
+        <MetricRow label="Slippage" value={`−${formatPercent(slippagePercent)}`} negative />
+        {isFunding && netFundingPercent !== undefined && (
+          <MetricRow
+            label="Net funding"
+            value={formatPercent(netFundingPercent)}
+            hint="доход только от funding"
+          />
+        )}
+        {isFunding && entrySpreadImpact !== undefined && (
+          <MetricRow
+            label="Спред при входе"
+            value={formatPercent(entrySpreadImpact)}
+            positive={entrySpreadImpact > 0}
+            negative={entrySpreadImpact < 0}
+          />
+        )}
+        <div className={styles.divider} />
+        <MetricRow
+          label="Итого"
+          value={formatPercent(totalNetPercent)}
+          positive={isProfitable}
+          negative={isUnprofitable}
+          hint="funding/basis − fees − slippage ± спред при входе"
+        />
       </div>
 
       <div className={styles.section}>
@@ -122,7 +181,7 @@ export function OpportunityDetailPage() {
             hint="за интервал funding"
           />
         )}
-        {item.predictedFundingRate !== undefined && (
+        {item.predictedFundingRate != null && (
           <MetricRow label="Predicted FR" value={formatRate(item.predictedFundingRate)} />
         )}
         {!isFunding && item.basisPercent !== undefined && (
@@ -147,12 +206,7 @@ export function OpportunityDetailPage() {
       </div>
 
       <div className={styles.section}>
-        <h3 className={styles.sectionTitle}>Estimated profit</h3>
-        <MetricRow
-          label="Base (position)"
-          value={formatUsd(item.estimatedProfitUsd)}
-          hint="расчёт сканера для базового размера"
-        />
+        <h3 className={styles.sectionTitle}>Прибыль на вашу позицию</h3>
         <div className={styles.positionInput}>
           <label className={styles.typeLabel} htmlFor="position-size">
             Размер позиции (USD)
@@ -168,10 +222,11 @@ export function OpportunityDetailPage() {
         </div>
         <div className={styles.divider} />
         <MetricRow
-          label="Theoretical profit"
-          value={formatUsd(estimatedProfit)}
-          positive
-          hint="оценка net after estimated fees, не гарантирована"
+          label="Итого за интервал"
+          value={formatUsd(totalProfitUsd)}
+          positive={isProfitable}
+          negative={isUnprofitable}
+          hint="оценка, не гарантирована"
         />
       </div>
 

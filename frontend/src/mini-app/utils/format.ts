@@ -1,10 +1,16 @@
 /** Форматирование чисел и дат для Mini App */
 
-export function formatPercent(value: number, digits = 3): string {
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value);
+}
+
+export function formatPercent(value: number | null | undefined, digits = 3): string {
+  if (!isFiniteNumber(value)) return '—';
   return `${value.toFixed(digits)}%`;
 }
 
-export function formatRate(value: number, digits = 4): string {
+export function formatRate(value: number | null | undefined, digits = 4): string {
+  if (!isFiniteNumber(value)) return '—';
   return `${(value * 100).toFixed(digits)}%`;
 }
 

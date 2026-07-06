@@ -15,6 +15,9 @@ export type FundingDirection =
   | 'long_spot_short_perp'
   | 'short_spot_long_perp';
 
+/** Вердикт сделки */
+export type TradeVerdict = 'profitable' | 'marginal' | 'unprofitable';
+
 export interface ScannerDashboard {
   fundingCount: number;
   cashCarryCount: number;
@@ -75,6 +78,8 @@ export interface FundingOpportunity {
   estimatedFeesPercent: number;
   estimatedSlippagePercent: number;
   netFundingPercent: number;
+  totalNetAfterEntryPercent: number;
+  tradeVerdict: TradeVerdict;
   estimatedNetProfitUsd: number;
   theoreticalApr?: number;
   isTheoreticalApr: boolean;
@@ -97,6 +102,8 @@ export interface CashCarryOpportunity {
   estimatedFeesPercent: number;
   estimatedSlippagePercent: number;
   netBasisPercent: number;
+  totalNetAfterEntryPercent: number;
+  tradeVerdict: TradeVerdict;
   annualizedApr?: number;
   theoreticalApr?: number;
   isTheoreticalApr: boolean;
@@ -120,6 +127,8 @@ export interface ArbitrageOpportunityDetail {
   predictedFundingRate?: number;
   basisPercent?: number;
   netYieldPercent: number;
+  tradeVerdict?: TradeVerdict;
+  totalNetAfterEntryPercent?: number;
   estimatedProfitUsd: number;
   annualizedApr?: number;
   opportunityScore: number;

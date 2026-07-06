@@ -6,14 +6,16 @@ interface MetricRowProps {
   value: ReactNode;
   mono?: boolean;
   positive?: boolean;
+  negative?: boolean;
   hint?: string;
 }
 
-export function MetricRow({ label, value, mono, positive, hint }: MetricRowProps) {
+export function MetricRow({ label, value, mono, positive, negative, hint }: MetricRowProps) {
   const valueClass = [
     styles.value,
     mono ? styles.mono : '',
     positive ? styles.positive : '',
+    negative ? styles.negative : '',
   ]
     .filter(Boolean)
     .join(' ');

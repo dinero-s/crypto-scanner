@@ -18,9 +18,12 @@ import { NetYieldCalculatorService } from './net-yield-calculator.service';
 import {
     buildMarketKey,
     calculateBasisPercent,
+    calculateEntrySpreadImpactPercent,
     calculateSpotPerpSpreadPercent,
     calculateTimeToFundingMinutes,
+    calculateTotalNetAfterEntryPercent,
     isValidPrice,
+    resolveTradeVerdict,
 } from '../utils/arbitrage-math.util';
 import { ArbitrageTypeEnum } from '../enums/arbitrage-type.enum';
 
@@ -202,7 +205,17 @@ export class ArbitrageCalculationService {
                 config.defaultSlippage,
             );
 
-        if (!this.filterService.passesNetYieldFilter(netFundingPercent, config)) {
+        const entrySpreadImpactPercent = calculateEntrySpreadImpactPercent(
+            direction,
+            spreadPercent ?? 0,
+        );
+        const totalNetAfterEntryPercent = calculateTotalNetAfterEntryPercent(
+            netFundingPercent,
+            entrySpreadImpactPercent,
+        );
+        const tradeVerdict = resolveTradeVerdict(totalNetAfterEntryPercent);
+
+        if (!this.filterService.passesNetYieldFilter(totalNetAfterEntryPercent, config)) {
             return null;
         }
 
@@ -212,11 +225,11 @@ export class ArbitrageCalculationService {
         );
         const estimatedProfitUsd = this.netYieldCalculator.calculateProfitUsd(
             config.defaultPositionSizeUsd,
-            netFundingPercent,
+            totalNetAfterEntryPercent,
         );
 
         const riskScore = this.scoringService.calculateRiskScore({
-            netYieldPercent: netFundingPercent,
+            netYieldPercent: totalNetAfterEntryPercent,
             spreadPercent,
             volume24h: input.volume24h,
             minVolume24h: config.minVolume24h,
@@ -225,7 +238,7 @@ export class ArbitrageCalculationService {
         });
         const opportunityScore = this.scoringService.calculateOpportunityScore(
             {
-                netYieldPercent: netFundingPercent,
+                netYieldPercent: totalNetAfterEntryPercent,
                 spreadPercent,
                 volume24h: input.volume24h,
                 minVolume24h: config.minVolume24h,
@@ -247,7 +260,7 @@ export class ArbitrageCalculationService {
             futuresPrice: input.perpBid,
             fundingRate: input.fundingRate,
             predictedFundingRate: input.predictedFundingRate,
-            netYieldPercent: netFundingPercent,
+            netYieldPercent: totalNetAfterEntryPercent,
             estimatedProfitUsd,
             annualizedApr: theoreticalApr ?? undefined,
             opportunityScore,
@@ -263,6 +276,10 @@ export class ArbitrageCalculationService {
                 isTheoreticalApr: true,
                 volume24h: input.volume24h,
                 grossYieldPercent: effectiveFundingRate * 100,
+                netFundingPercent,
+                entrySpreadImpactPercent,
+                totalNetAfterEntryPercent,
+                tradeVerdict,
             },
             calculatedAt: nowMs,
         };
@@ -327,6 +344,8 @@ export class ArbitrageCalculationService {
             isTheoreticalApr = true;
         }
 
+        const tradeVerdict = resolveTradeVerdict(netBasisPercent);
+
         const estimatedProfitUsd = this.netYieldCalculator.calculateProfitUsd(
             config.defaultPositionSizeUsd,
             netBasisPercent,
@@ -372,6 +391,8 @@ export class ArbitrageCalculationService {
                 isTheoreticalApr,
                 volume24h: input.volume24h,
                 grossYieldPercent: basisPercent,
+                totalNetAfterEntryPercent: netBasisPercent,
+                tradeVerdict,
             },
             calculatedAt: nowMs,
         };

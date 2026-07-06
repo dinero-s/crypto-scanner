@@ -56,6 +56,7 @@ export function CashCarryPage() {
   const query = useQuery({
     queryKey: ['mini-app', 'cash-carry', queryParams],
     queryFn: () => fetchCashCarryOpportunities(queryParams),
+    refetchInterval: 40_000,
   });
 
   const sorted = useMemo(() => {

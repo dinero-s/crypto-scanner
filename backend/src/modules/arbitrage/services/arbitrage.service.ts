@@ -10,7 +10,7 @@ import {
     ArbitrageOpportunityDoc,
     ArbitrageOpportunityMetadata,
 } from '../entities/arbitrage-opportunity.entity';
-import { ArbitrageTypeEnum, FundingDirectionEnum } from '../enums/arbitrage-type.enum';
+import { ArbitrageTypeEnum, FundingDirectionEnum, TradeVerdictEnum } from '../enums/arbitrage-type.enum';
 import { ArbitrageRepository } from '../repositories/arbitrage.repository';
 
 /** Основной сервис API арбитража */
@@ -81,7 +81,9 @@ export class ArbitrageService {
             spotPerpSpreadPercent: meta.spotPerpSpreadPercent ?? 0,
             estimatedFeesPercent: meta.estimatedFeesPercent ?? 0,
             estimatedSlippagePercent: meta.estimatedSlippagePercent ?? 0,
-            netFundingPercent: row.netYieldPercent,
+            netFundingPercent: meta.netFundingPercent ?? row.netYieldPercent,
+            totalNetAfterEntryPercent: meta.totalNetAfterEntryPercent ?? row.netYieldPercent,
+            tradeVerdict: meta.tradeVerdict ?? TradeVerdictEnum.MARGINAL,
             estimatedNetProfitUsd: row.estimatedProfitUsd,
             theoreticalApr: row.annualizedApr,
             isTheoreticalApr: meta.isTheoreticalApr ?? true,
@@ -108,6 +110,8 @@ export class ArbitrageService {
             estimatedFeesPercent: meta.estimatedFeesPercent ?? 0,
             estimatedSlippagePercent: meta.estimatedSlippagePercent ?? 0,
             netBasisPercent: row.netYieldPercent,
+            totalNetAfterEntryPercent: meta.totalNetAfterEntryPercent ?? row.netYieldPercent,
+            tradeVerdict: meta.tradeVerdict ?? TradeVerdictEnum.MARGINAL,
             annualizedApr: isTheoretical ? undefined : row.annualizedApr,
             theoreticalApr: isTheoretical ? row.annualizedApr : undefined,
             isTheoreticalApr: isTheoretical,
@@ -134,6 +138,8 @@ export class ArbitrageService {
             predictedFundingRate: row.predictedFundingRate,
             basisPercent: row.basisPercent,
             netYieldPercent: row.netYieldPercent,
+            tradeVerdict: meta.tradeVerdict,
+            totalNetAfterEntryPercent: meta.totalNetAfterEntryPercent ?? row.netYieldPercent,
             estimatedProfitUsd: row.estimatedProfitUsd,
             annualizedApr: row.annualizedApr,
             opportunityScore: row.opportunityScore,

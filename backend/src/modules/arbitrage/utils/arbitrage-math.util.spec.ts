@@ -1,15 +1,19 @@
 import {
     calculateBasisPercent,
+    calculateEntrySpreadImpactPercent,
     calculateEstimatedProfitUsd,
     calculateFeesPercent,
     calculateNetBasisPercent,
     calculateNetFundingPercent,
     calculateSlippagePercent,
     calculateSpotPerpSpreadPercent,
+    calculateTotalNetAfterEntryPercent,
     isPositiveNetYield,
     isValidPrice,
+    resolveTradeVerdict,
     toDecimal,
 } from './arbitrage-math.util';
+import { FundingDirectionEnum, TradeVerdictEnum } from '../enums/arbitrage-type.enum';
 
 describe('arbitrage-math.util', () => {
     describe('calculateBasisPercent', () => {
@@ -81,6 +85,35 @@ describe('arbitrage-math.util', () => {
         it('считает spread между perp bid и spot ask', () => {
             const spread = calculateSpotPerpSpreadPercent(65_100, 65_000);
             expect(spread).toBeCloseTo(0.1538, 3);
+        });
+    });
+
+    describe('calculateTotalNetAfterEntryPercent', () => {
+        it('учитывает спред при входе в итоговый net', () => {
+            const impact = calculateEntrySpreadImpactPercent(
+                FundingDirectionEnum.LONG_SPOT_SHORT_PERP,
+                -1.983,
+            );
+            expect(impact).toBeCloseTo(-1.983, 3);
+
+            const total = calculateTotalNetAfterEntryPercent(1.65, impact);
+            expect(total).toBeCloseTo(-0.333, 3);
+        });
+
+        it('инвертирует спред для short spot / long perp', () => {
+            const impact = calculateEntrySpreadImpactPercent(
+                FundingDirectionEnum.SHORT_SPOT_LONG_PERP,
+                -1.983,
+            );
+            expect(impact).toBeCloseTo(1.983, 3);
+        });
+    });
+
+    describe('resolveTradeVerdict', () => {
+        it('классифицирует итоговый net', () => {
+            expect(resolveTradeVerdict(0.5)).toBe(TradeVerdictEnum.PROFITABLE);
+            expect(resolveTradeVerdict(0)).toBe(TradeVerdictEnum.MARGINAL);
+            expect(resolveTradeVerdict(-0.333)).toBe(TradeVerdictEnum.UNPROFITABLE);
         });
     });
 

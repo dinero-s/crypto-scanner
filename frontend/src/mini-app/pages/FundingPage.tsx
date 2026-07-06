@@ -58,6 +58,7 @@ export function FundingPage() {
   const query = useQuery({
     queryKey: ['mini-app', 'funding', queryParams],
     queryFn: () => fetchFundingOpportunities(queryParams),
+    refetchInterval: 40_000,
   });
 
   const sorted = useMemo(() => {

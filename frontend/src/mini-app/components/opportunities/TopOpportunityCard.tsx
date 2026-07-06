@@ -8,6 +8,8 @@ import {
 } from '../../utils/format';
 import { Badge } from '../ui/Badge';
 import { RiskBadge } from '../ui/RiskBadge';
+import { VerdictBadge } from '../ui/VerdictBadge';
+import { readTotalNetPercent, readTradeVerdict } from '../../utils/tradeVerdict';
 import oppStyles from './OpportunityTable.module.css';
 import styles from './TopOpportunityCard.module.css';
 
@@ -19,6 +21,8 @@ interface TopOpportunityCardProps {
 export function TopOpportunityCard({ item, rank }: TopOpportunityCardProps) {
   const navigate = useNavigate();
   const typeLabel = item.type === 'funding' ? 'Funding' : 'Cash & Carry';
+  const totalNet = readTotalNetPercent(item.netYieldPercent, item.metadata);
+  const verdict = readTradeVerdict(totalNet, item.metadata);
 
   return (
     <div
@@ -40,12 +44,13 @@ export function TopOpportunityCard({ item, rank }: TopOpportunityCardProps) {
           <Badge variant="accent" className={styles.typeBadge}>
             {typeLabel}
           </Badge>
+          <VerdictBadge verdict={verdict} />
           <RiskBadge score={item.riskScore} />
         </div>
       </div>
       <div className={oppStyles.right}>
-        <span className={oppStyles.yield}>{formatPercent(item.netYieldPercent)}</span>
-        <span className={oppStyles.yieldHint}>est. net yield</span>
+        <span className={oppStyles.yield}>{formatPercent(totalNet)}</span>
+        <span className={oppStyles.yieldHint}>итого за интервал</span>
         <span className={oppStyles.yieldHint}>{formatTimestamp(item.calculatedAt)}</span>
       </div>
     </div>

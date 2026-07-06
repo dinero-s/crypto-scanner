@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ExchangeEnum } from 'src/modules/exchanges/enums/exchange.enum';
-import { FundingDirectionEnum } from '../enums/arbitrage-type.enum';
+import { FundingDirectionEnum, TradeVerdictEnum } from '../enums/arbitrage-type.enum';
 
 /** Параметры расчёта net yield */
 export class NetYieldCalculationDto {
@@ -89,10 +89,16 @@ export class FundingOpportunityDto {
     @ApiProperty({ description: 'Оценка slippage (%)' })
     estimatedSlippagePercent: number;
 
-    @ApiProperty({ description: 'Net funding (%) — ожидаемая доходность за интервал' })
+    @ApiProperty({ description: 'Net funding (%) — доход только от funding за интервал' })
     netFundingPercent: number;
 
-    @ApiProperty({ description: 'Ожидаемая чистая прибыль USD' })
+    @ApiProperty({ description: 'Итог (%) — funding + спред при входе − fees − slippage' })
+    totalNetAfterEntryPercent: number;
+
+    @ApiProperty({ description: 'Вердикт сделки', enum: TradeVerdictEnum })
+    tradeVerdict: TradeVerdictEnum;
+
+    @ApiProperty({ description: 'Ожидаемая чистая прибыль USD (по итоговому net)' })
     estimatedNetProfitUsd: number;
 
     @ApiPropertyOptional({ description: 'Теоретический APR (%) — не гарантированная доходность' })
@@ -151,6 +157,12 @@ export class CashCarryOpportunityDto {
 
     @ApiProperty({ description: 'Net basis (%) — ожидаемая доходность' })
     netBasisPercent: number;
+
+    @ApiProperty({ description: 'Итог (%) — basis − fees − slippage' })
+    totalNetAfterEntryPercent: number;
+
+    @ApiProperty({ description: 'Вердикт сделки', enum: TradeVerdictEnum })
+    tradeVerdict: TradeVerdictEnum;
 
     @ApiPropertyOptional({ description: 'Annualized APR (%) при наличии expiry' })
     annualizedApr?: number;
@@ -230,8 +242,14 @@ export class ArbitrageOpportunityDetailDto {
     @ApiPropertyOptional({ description: 'Basis (%)' })
     basisPercent?: number;
 
-    @ApiProperty({ description: 'Net yield (%) — ожидаемая доходность' })
+    @ApiProperty({ description: 'Net yield (%) — итоговая ожидаемая доходность за интервал' })
     netYieldPercent: number;
+
+    @ApiPropertyOptional({ description: 'Вердикт сделки', enum: TradeVerdictEnum })
+    tradeVerdict?: TradeVerdictEnum;
+
+    @ApiPropertyOptional({ description: 'Итог (%) с учётом спреда при входе' })
+    totalNetAfterEntryPercent?: number;
 
     @ApiProperty({ description: 'Ожидаемая прибыль USD' })
     estimatedProfitUsd: number;

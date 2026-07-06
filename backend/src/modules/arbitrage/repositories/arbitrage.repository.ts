@@ -17,25 +17,46 @@ export class ArbitrageRepository {
         private readonly model: Model<ArbitrageOpportunityDoc>,
     ) {}
 
-    /** Bulk replace opportunities по типу */
+    /** Bulk replace opportunities по типу (upsert — стабильный _id между пересчётами) */
     async replaceByType(
         type: ArbitrageTypeEnum,
         opportunities: CalculatedOpportunity[],
         calculatedAt: number,
     ): Promise<number> {
-        await this.model.deleteMany({ type, calculatedAt: { $lt: calculatedAt } }).exec();
-
         if (opportunities.length === 0) {
+            await this.model.deleteMany({ type }).exec();
             return 0;
         }
 
-        const docs = opportunities.map((item) => ({
-            ...item,
-            metadata: item.metadata,
-        }));
+        await this.model.bulkWrite(
+            opportunities.map((item) => ({
+                updateOne: {
+                    filter: {
+                        type,
+                        spotExchange: item.spotExchange,
+                        spotSymbol: item.spotSymbol,
+                    },
+                    update: {
+                        $set: {
+                            ...item,
+                            type,
+                            metadata: item.metadata,
+                            calculatedAt,
+                        },
+                    },
+                    upsert: true,
+                },
+            })),
+        );
 
-        const inserted = await this.model.insertMany(docs);
-        return inserted.length;
+        await this.model
+            .deleteMany({
+                type,
+                calculatedAt: { $lt: calculatedAt },
+            })
+            .exec();
+
+        return opportunities.length;
     }
 
     /** Найти по фильтру, сортировка по opportunityScore */
